@@ -21,7 +21,7 @@ import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.shop.services.ShopService;
-import de.polo.core.storage.CompanyRole;
+import de.polo.core.storage.CoreCompanyRole;
 import de.polo.core.storage.GasStationData;
 import de.polo.core.storage.JailInfo;
 import de.polo.core.storage.WantedReason;
@@ -657,7 +657,7 @@ public class TabletUtils implements Listener {
                         }
                     });
                 } else {
-                    CompanyRole role = playerData.getVariable("tablet::company::role");
+                    CoreCompanyRole role = playerData.getVariable("tablet::company::role");
                     inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§6" + shopData.getName(), "§8 ➥ §eVerwaltung für  " + role.getName() + " hinzufügen")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
@@ -682,7 +682,7 @@ public class TabletUtils implements Listener {
                         }
                     });
                 } else {
-                    CompanyRole role = playerData.getVariable("tablet::company::role");
+                    CoreCompanyRole role = playerData.getVariable("tablet::company::role");
                     inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.IRON_INGOT, 1, 0, "§6" + gasStationData.getName(), "§8 ➥ §eVerwaltung für  " + role.getName() + " hinzufügen")) {
                         @Override
                         public void onClick(InventoryClickEvent event) {
@@ -714,7 +714,7 @@ public class TabletUtils implements Listener {
         int i = 0;
         while (resultSet.next()) {
             String roleName = "Keine Rolle";
-            CompanyRole role = companyManager.getCompanyRoleById(resultSet.getInt("companyRole"));
+            CoreCompanyRole role = companyManager.getCompanyRoleById(resultSet.getInt("companyRole"));
             if (role != null) {
                 roleName = role.getName();
             }
@@ -787,7 +787,7 @@ public class TabletUtils implements Listener {
             }
         });
         int i = 0;
-        for (CompanyRole role : playerData.getCompany().getRoles()) {
+        for (CoreCompanyRole role : playerData.getCompany().getRoles()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + role.getName())) {
                 @SneakyThrows
                 @Override
@@ -815,7 +815,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Rollen verwalten (" + playerData.getCompany().getRoles().size() + ")"), true, true);
         int i = 0;
-        for (CompanyRole role : playerData.getCompany().getRoles()) {
+        for (CoreCompanyRole role : playerData.getCompany().getRoles()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6" + role.getName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -845,7 +845,7 @@ public class TabletUtils implements Listener {
             inventoryManager.setItem(new CustomItem(26, ItemManager.createItem(Material.EMERALD, 1, 0, "§2Neu erstellen")) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
-                    CompanyRole role = new CompanyRole();
+                    CoreCompanyRole role = new CoreCompanyRole();
                     role.setName("Neue Rolle");
                     role.setPermissions(new ObjectArrayList<>());
                     playerData.getCompany().createRole(role);
@@ -855,7 +855,7 @@ public class TabletUtils implements Listener {
         }
     }
 
-    private void editRole(Player player, CompanyRole role) {
+    private void editRole(Player player, CoreCompanyRole role) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Rolle bearbeiten (" + role.getName() + ")"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + role.getName())) {
@@ -993,7 +993,7 @@ public class TabletUtils implements Listener {
                 event.end();
                 return;
             }
-            CompanyRole role = event.getPlayerData().getVariable("temp_role");
+            CoreCompanyRole role = event.getPlayerData().getVariable("temp_role");
             role.setName(event.getMessage());
             editRole(event.getPlayer(), role);
             role.save();
@@ -1004,7 +1004,7 @@ public class TabletUtils implements Listener {
                 event.end();
                 return;
             }
-            CompanyRole role = event.getPlayerData().getVariable("temp_role");
+            CoreCompanyRole role = event.getPlayerData().getVariable("temp_role");
             role.addPermission(event.getMessage());
             editRole(event.getPlayer(), role);
             role.save();

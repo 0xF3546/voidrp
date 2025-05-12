@@ -10,7 +10,7 @@ import de.polo.core.game.base.housing.HouseManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.Agreement;
-import de.polo.core.storage.Company;
+import de.polo.core.storage.CoreCompany;
 import de.polo.core.storage.SubGroup;
 import de.polo.core.utils.PhoneUtils;
 import de.polo.core.utils.Prefix;
@@ -114,10 +114,10 @@ public class VertragUtil {
                     playerData.save();
                     break;
                 case "company_invite":
-                    Company company = Main.companyManager.getCompanyById(Integer.parseInt(curr.toString()));
-                    playerData.setCompany(company);
+                    CoreCompany coreCompany = Main.companyManager.getCompanyById(Integer.parseInt(curr.toString()));
+                    playerData.setCompany(coreCompany);
                     playerData.save();
-                    player.sendMessage("§6Du bist " + company.getName() + " beigetreten.");
+                    player.sendMessage("§6Du bist " + coreCompany.getName() + " beigetreten.");
                     break;
                 case "subgroup_invite":
                     SubGroup group = Main.factionManager.subGroups.getSubGroup(Integer.parseInt(curr.toString()));
@@ -252,8 +252,8 @@ public class VertragUtil {
                     player.sendMessage("§6Du hast die einladung zu abgelehnt.");
                     break;
                 case "company_invite":
-                    Company company = Main.companyManager.getCompanyById(Integer.parseInt(curr));
-                    player.sendMessage("§6Du hast die einladung zu " + company.getName() + " abgelehnt.");
+                    CoreCompany coreCompany = Main.companyManager.getCompanyById(Integer.parseInt(curr));
+                    player.sendMessage("§6Du hast die einladung zu " + coreCompany.getName() + " abgelehnt.");
                     break;
                 case "subgroup_invite":
                     SubGroup subGroup = Main.factionManager.subGroups.getSubGroup(Integer.parseInt(curr));

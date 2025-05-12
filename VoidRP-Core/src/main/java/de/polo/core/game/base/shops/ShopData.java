@@ -4,7 +4,7 @@ import de.polo.api.VoidAPI;
 import de.polo.api.crew.Crew;
 import de.polo.core.Main;
 import de.polo.core.crew.services.CrewService;
-import de.polo.core.storage.Company;
+import de.polo.core.storage.CoreCompany;
 import de.polo.core.utils.enums.ShopType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Setter;
@@ -103,7 +103,7 @@ public class ShopData {
         this.type = type;
     }
 
-    public Company getCompany() {
+    public CoreCompany getCompany() {
         return Main.companyManager.getCompanyById(company);
     }
 

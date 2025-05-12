@@ -1,6 +1,8 @@
 package de.polo.core.player.entities;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.company.Company;
+import de.polo.api.company.CompanyRole;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.LongTermJob;

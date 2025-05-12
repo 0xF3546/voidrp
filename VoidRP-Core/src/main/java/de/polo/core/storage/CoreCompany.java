@@ -1,6 +1,8 @@
 package de.polo.core.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.polo.api.company.Company;
+import de.polo.api.company.CompanyRole;
 import de.polo.core.Main;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
@@ -15,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-public class Company {
+public class CoreCompany implements Company {
     private final List<CompanyRole> roles = new ObjectArrayList<>();
     @Getter
     @Setter

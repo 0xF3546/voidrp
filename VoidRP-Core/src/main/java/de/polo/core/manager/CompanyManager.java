@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.polo.core.Main;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.player.entities.PlayerData;
-import de.polo.core.storage.Company;
-import de.polo.core.storage.CompanyRole;
+import de.polo.core.storage.CoreCompany;
+import de.polo.core.storage.CoreCompanyRole;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.SneakyThrows;
 
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class CompanyManager {
-    private final List<Company> companies = new ObjectArrayList<>();
+    private final List<CoreCompany> companies = new ObjectArrayList<>();
     private final CoreDatabase coreDatabase;
 
     public CompanyManager(CoreDatabase coreDatabase) {
@@ -32,20 +32,20 @@ public class CompanyManager {
              ResultSet result = statement.executeQuery()) {
 
             while (result.next()) {
-                Company company = new Company();
-                company.setId(result.getInt("id"));
-                company.setOwner(UUID.fromString(result.getString("owner")));
-                company.setBank(result.getInt("bank"));
-                company.setName(result.getString("name"));
+                CoreCompany coreCompany = new CoreCompany();
+                coreCompany.setId(result.getInt("id"));
+                coreCompany.setOwner(UUID.fromString(result.getString("owner")));
+                coreCompany.setBank(result.getInt("bank"));
+                coreCompany.setName(result.getString("name"));
 
                 // Rollen für die Company abfragen
                 try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM company_roles WHERE companyId = ?")) {
-                    preparedStatement.setInt(1, company.getId()); // Setze den Parameter vor der Abfrage
+                    preparedStatement.setInt(1, coreCompany.getId()); // Setze den Parameter vor der Abfrage
 
                     try (ResultSet roleResult = preparedStatement.executeQuery()) {
                         while (roleResult.next()) {
-                            CompanyRole role = new CompanyRole();
-                            role.setCompany(company);
+                            CoreCompanyRole role = new CoreCompanyRole();
+                            role.setCompany(coreCompany);
                             role.setName(roleResult.getString("name"));
                             role.setId(roleResult.getInt("id"));
                             String permissionsJson = roleResult.getString("permissions");
@@ -57,7 +57,7 @@ public class CompanyManager {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            company.addRole(role);
+                            coreCompany.addRole(role);
                         }
                     } catch (SQLException e) {
                         e.printStackTrace(); // Fehlerbehandlung für die ResultSet-Schleife
@@ -66,7 +66,7 @@ public class CompanyManager {
                     e.printStackTrace(); // Fehlerbehandlung für PreparedStatement
                 }
 
-                companies.add(company);
+                companies.add(coreCompany);
             }
         } catch (SQLException e) {
             e.printStackTrace(); // Fehlerbehandlung für die Hauptabfrage
@@ -74,48 +74,48 @@ public class CompanyManager {
     }
 
     @SneakyThrows
-    public boolean create(Company company) {
-        for (Company c : companies) {
+    public boolean create(CoreCompany coreCompany) {
+        for (CoreCompany c : companies) {
             if (c.getName() == null) continue;
-            if (c.getName().equalsIgnoreCase(company.getName())) {
+            if (c.getName().equalsIgnoreCase(coreCompany.getName())) {
                 return false;
             }
         }
         Connection connection = coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("INSERT INTO companies (name, owner) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-        statement.setString(1, company.getName());
-        statement.setString(2, company.getOwner().toString());
+        statement.setString(1, coreCompany.getName());
+        statement.setString(2, coreCompany.getOwner().toString());
         statement.execute();
         ResultSet generatedKeys = statement.getGeneratedKeys();
         if (generatedKeys.next()) {
             int key = generatedKeys.getInt(1);
-            company.setId(key);
+            coreCompany.setId(key);
         }
-        companies.add(company);
+        companies.add(coreCompany);
         statement.close();
         connection.close();
         return true;
     }
 
     @SneakyThrows
-    public boolean delete(Company company) {
-        for (Company c : companies) {
-            if (c.getName().equalsIgnoreCase(company.getName())) {
+    public boolean delete(CoreCompany coreCompany) {
+        for (CoreCompany c : companies) {
+            if (c.getName().equalsIgnoreCase(coreCompany.getName())) {
                 return false;
             }
         }
         Connection connection = coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("DELETE FROM companies WHERE id = ?");
-        statement.setInt(1, company.getId());
+        statement.setInt(1, coreCompany.getId());
         statement.execute();
-        companies.remove(company);
+        companies.remove(coreCompany);
         statement.close();
         connection.close();
         return true;
     }
 
-    public Company getCompanyById(int id) {
-        for (Company c : companies) {
+    public CoreCompany getCompanyById(int id) {
+        for (CoreCompany c : companies) {
             if (c.getId() == id) {
                 return c;
             }
@@ -123,9 +123,9 @@ public class CompanyManager {
         return null;
     }
 
-    public CompanyRole getCompanyRoleById(int id) {
-        for (Company c : companies) {
-            for (CompanyRole r : c.getRoles()) {
+    public CoreCompanyRole getCompanyRoleById(int id) {
+        for (CoreCompany c : companies) {
+            for (CoreCompanyRole r : c.getRoles()) {
                 if (r.getId() == id) {
                     return r;
                 }
@@ -134,16 +134,16 @@ public class CompanyManager {
         return null;
     }
 
-    public void sendCompanyMessage(Company company, String message) {
+    public void sendCompanyMessage(CoreCompany coreCompany, String message) {
         for (PlayerData playerData : Main.playerManager.getPlayers()) {
-            if (playerData.getCompany().equals(company)) {
+            if (playerData.getCompany().equals(coreCompany)) {
                 playerData.getPlayer().sendMessage(message);
             }
         }
     }
 
     @SneakyThrows
-    public void setPlayerRole(PlayerData playerData, CompanyRole role) {
+    public void setPlayerRole(PlayerData playerData, CoreCompanyRole role) {
         playerData.setCompanyRole(role);
         Connection connection = Main.getInstance().coreDatabase.getConnection();
         PreparedStatement statement = connection.prepareStatement("UPDATE players SET companyRole = ? WHERE uuid = ?");

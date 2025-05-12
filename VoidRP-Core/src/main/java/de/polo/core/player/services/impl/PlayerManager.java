@@ -362,11 +362,11 @@ public class PlayerManager implements Listener {
             playerData.setCoins(result.getInt("coins"));
             playerData.setCompany(null);
             if (result.getInt("company") != 0) {
-                Company company = companyManager.getCompanyById(result.getInt("company"));
-                if (company != null) {
-                    playerData.setCompany(company);
-                    if (company.getRoles() != null) {
-                        for (CompanyRole role : company.getRoles()) {
+                CoreCompany coreCompany = companyManager.getCompanyById(result.getInt("company"));
+                if (coreCompany != null) {
+                    playerData.setCompany(coreCompany);
+                    if (coreCompany.getRoles() != null) {
+                        for (CoreCompanyRole role : coreCompany.getRoles()) {
                             if (role == null) continue;
                             if (role.getId() == result.getInt("companyRole")) {
                                 playerData.setCompanyRole(role);

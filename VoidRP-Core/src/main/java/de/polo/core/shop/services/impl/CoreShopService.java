@@ -6,7 +6,7 @@ import de.polo.core.shop.entities.CrewTakeShop;
 import de.polo.core.shop.entities.ShopRob;
 import de.polo.core.shop.repository.ShopRepository;
 import de.polo.core.shop.services.ShopService;
-import de.polo.core.storage.Company;
+import de.polo.core.storage.CoreCompany;
 import de.polo.core.utils.Service;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -53,7 +53,7 @@ public class CoreShopService implements ShopService {
     }
 
     @Override
-    public void setOwner(ShopData shop, Company owner) {
+    public void setOwner(ShopData shop, CoreCompany owner) {
         shop.setCompany(owner.getId());
         shopRepository.saveShop(shop);
     }

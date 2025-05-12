@@ -110,7 +110,7 @@ public class GasStationData {
         this.liter = liter;
     }
 
-    public Company getCompany() {
+    public CoreCompany getCompany() {
         return Main.companyManager.getCompanyById(company);
     }
 

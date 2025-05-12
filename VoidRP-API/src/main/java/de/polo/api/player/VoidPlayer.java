@@ -2,6 +2,8 @@ package de.polo.api.player;
 
 import de.polo.api.Utils.GUI;
 import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.company.Company;
+import de.polo.api.company.CompanyRole;
 import de.polo.api.jobs.Job;
 import de.polo.api.jobs.enums.MiniJob;
 import de.polo.api.player.enums.Setting;
@@ -21,6 +23,7 @@ public interface VoidPlayer {
     Player getPlayer();
 
     PlayerCharacter getData();
+    CompanyRole getCompanyRole();
 
     List<PlayerSetting> getSettings();
 

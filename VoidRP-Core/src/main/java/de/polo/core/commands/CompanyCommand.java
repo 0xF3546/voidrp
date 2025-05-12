@@ -10,8 +10,8 @@ import de.polo.core.manager.CompanyManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
-import de.polo.core.storage.Company;
-import de.polo.core.storage.CompanyRole;
+import de.polo.core.storage.CoreCompany;
+import de.polo.core.storage.CoreCompanyRole;
 import de.polo.core.utils.Prefix;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -39,7 +39,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        Company company = playerData.getCompany();
+        CoreCompany coreCompany = playerData.getCompany();
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("manage")) {
                 LocationService locationService = VoidAPI.getService(LocationService.class);
@@ -47,7 +47,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
                     player.sendMessage(Prefix.ERROR + "Du bist nicht in der nähe der Firmenverwaltung.");
                     return false;
                 }
-                if (company != null) {
+                if (coreCompany != null) {
                     player.sendMessage(Prefix.ERROR + "Du hast bereits eine Firma.");
                     return false;
                 }
@@ -78,19 +78,19 @@ public class CompanyCommand implements CommandExecutor, Listener {
                     return;
                 }
                 player.closeInventory();
-                Company company = new Company();
-                company.setOwner(player.getUniqueId());
-                company.setName(playerData.getVariable("company::name"));
-                company.setBank(0);
-                if (companyManager.create(company)) {
-                    playerData.setCompany(company);
+                CoreCompany coreCompany = new CoreCompany();
+                coreCompany.setOwner(player.getUniqueId());
+                coreCompany.setName(playerData.getVariable("company::name"));
+                coreCompany.setBank(0);
+                if (companyManager.create(coreCompany)) {
+                    playerData.setCompany(coreCompany);
                     playerData.removeBankMoney(250000, "Firmengründung");
-                    player.sendMessage("§8[§6" + company.getName() + "§8]§a Die Firma wurde erfolgreich gegründet!");
+                    player.sendMessage("§8[§6" + coreCompany.getName() + "§8]§a Die Firma wurde erfolgreich gegründet!");
                     playerData.save();
-                    CompanyRole role = new CompanyRole();
+                    CoreCompanyRole role = new CoreCompanyRole();
                     role.addPermission("*");
                     role.setName("CEO");
-                    company.createRole(role);
+                    coreCompany.createRole(role);
                     companyManager.setPlayerRole(playerData, role);
                 } else {
                     player.sendMessage(Prefix.ERROR + "Es gibt diese oder eine ähnliche Firma bereits.");

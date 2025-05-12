@@ -4,7 +4,7 @@ import de.polo.api.crew.Crew;
 import de.polo.core.game.base.shops.ShopData;
 import de.polo.core.shop.entities.CrewTakeShop;
 import de.polo.core.shop.entities.ShopRob;
-import de.polo.core.storage.Company;
+import de.polo.core.storage.CoreCompany;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface ShopService {
 
     void setHolder(ShopData shop, Crew holder);
 
-    void setOwner(ShopData shop, Company owner);
+    void setOwner(ShopData shop, CoreCompany owner);
 
     List<ShopRob> getActiveRobberies();
 

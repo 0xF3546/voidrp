@@ -1,51 +1,31 @@
 package de.polo.core.storage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.polo.api.company.Company;
+import de.polo.api.company.CompanyRole;
 import de.polo.core.Main;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.List;
 
-public class CompanyRole {
+public class CoreCompanyRole implements CompanyRole {
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private Company company;
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private List<String> permissions = new ObjectArrayList<>();
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<String> getPermissions() {
-        return permissions;
-    }
-
-    public void setPermissions(List<String> permissions) {
-        this.permissions = permissions;
-    }
 
     public void addPermission(String permission) {
         this.permissions.add(permission);
