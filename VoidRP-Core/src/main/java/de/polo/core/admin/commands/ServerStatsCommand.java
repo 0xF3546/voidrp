@@ -40,6 +40,6 @@ public class ServerStatsCommand extends CommandBase {
 
         int onlinePlayer = VoidAPI.getPlayers().size();
         int afkPlayers = VoidAPI.getPlayers().stream().filter(VoidPlayer::isAFK).toList().size();
-        player.sendMessage("§8 - §7Aktuelle Spieler§8: §a" + onlinePlayer + " §8(§7" + Bukkit.getOnlinePlayers().size() + " §8(§7" + afkPlayers + " AFK§8)");
+        player.sendMessage("§8 - §7Aktuelle Spieler§8: §a" + onlinePlayer + " §8(§7" + afkPlayers + " AFK§8)");
     }
 }
