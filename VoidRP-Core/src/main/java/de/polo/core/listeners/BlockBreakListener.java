@@ -45,7 +45,6 @@ public class BlockBreakListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
-        event.setCancelled(true);
         try {
             if (!player.getGameMode().equals(GameMode.CREATIVE)) {
                 if (!ServerManager.canDoJobs()) {
