@@ -1,6 +1,10 @@
 package de.polo.core.base.commands;
 
+import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.handler.CommandBase;
+import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.player.PlayerPacket;
 import org.bukkit.command.Command;
@@ -9,25 +13,30 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static de.polo.core.Main.utils;
+
 /**
  * @author Mayson1337
  * @version 1.0.0
  * @since 1.0.0
  */
-public class AFKCommand implements CommandExecutor {
-    private final Utils utils;
+@CommandBase.CommandMeta(
+        name = "afk"
+)
+public class AFKCommand extends CommandBase {
 
-    public AFKCommand(Utils utils) {
-        this.utils = utils;
-        Main.registerCommand("afk", this);
+    public AFKCommand(@NotNull CommandMeta meta) {
+        super(meta);
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Player player = (Player) sender;
-        utils.setAFK(player, true);
-        PlayerPacket packet = new PlayerPacket(player);
+    public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
+        if (player.isAFK()) {
+            player.sendMessage("Du bist bereits AFK.", Prefix.ERROR);
+            return;
+        }
+        utils.setAFK(player.getPlayer(), true);
+        PlayerPacket packet = new PlayerPacket(player.getPlayer());
         packet.renewPacket();
-        return false;
     }
 }

@@ -527,7 +527,6 @@ public final class Main extends JavaPlugin implements Server {
         public BlacklistReasonsCommand blacklistReasonsCommand;
         public ModifyBlacklistCommand modifyBlacklistCommand;
         public AutoBlacklistCommand autoBlacklistCommand;
-        public AFKCommand afkCommand;
         public SecondaryTeamInfoCommand secondaryTeamInfoCommand;
         public SubTeamCommand subTeamCommand;
         public SubTeamChat subTeamChat;
@@ -729,7 +728,6 @@ public final class Main extends JavaPlugin implements Server {
             blacklistReasonsCommand = new BlacklistReasonsCommand(playerManager, factionManager);
             modifyBlacklistCommand = new ModifyBlacklistCommand(playerManager, factionManager);
             autoBlacklistCommand = new AutoBlacklistCommand(playerManager, factionManager);
-            afkCommand = new AFKCommand(utils);
             secondaryTeamInfoCommand = new SecondaryTeamInfoCommand();
             subTeamCommand = new SubTeamCommand(playerManager, factionManager);
             subTeamChat = new SubTeamChat(playerManager);
