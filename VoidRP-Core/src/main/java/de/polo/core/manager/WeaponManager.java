@@ -147,8 +147,22 @@ public class WeaponManager implements Listener {
     }
 
     public Weapon getWeaponFromItemStack(ItemStack stack) {
+        if (stack == null || !stack.hasItemMeta()) {
+            return null;
+        }
+        ItemMeta meta = stack.getItemMeta();
+        meta.getPersistentDataContainer();
+
         NamespacedKey idKey = new NamespacedKey(Main.getInstance(), "id");
-        Integer id = stack.getItemMeta().getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+        if (!meta.getPersistentDataContainer().has(idKey, PersistentDataType.INTEGER)) {
+            return null;
+        }
+
+        Integer id = meta.getPersistentDataContainer().get(idKey, PersistentDataType.INTEGER);
+        if (id == null) {
+            return null;
+        }
+
         return weaponList.get(id);
     }
 
