@@ -33,6 +33,7 @@ public class JoinListener implements Listener {
         UUID uuid = player.getUniqueId();
         event.joinMessage(Component.text(""));
         player.setGameMode(GameMode.SURVIVAL);
+        VoidAPI.addPlayer(new CoreVoidPlayer(player));
         AdminService adminService = VoidAPI.getService(AdminService.class);
         LocationService locationService = VoidAPI.getService(LocationService.class);
         if (playerManager.isCreated(player.getUniqueId())) {
@@ -79,7 +80,5 @@ public class JoinListener implements Listener {
         } else {
             Utils.Tablist.setTablist(player, null);
         }
-
-        VoidAPI.addPlayer(new CoreVoidPlayer(player));
     }
 }
