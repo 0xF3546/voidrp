@@ -135,7 +135,7 @@ public class BankingUtils implements Listener {
                 player.sendMessage("§8[§aATM§8]§7 Gib den Spieler an, an wen das Geld überwiesen werden soll.");
             }
         });
-        if (atm.getLastTimeBlown() == null || Duration.between(atm.getLastTimeBlown(), LocalDateTime.now()).toHours() >= 1) {
+        if (atm.getLastTimeBlown() == null || Duration.between(atm.getLastTimeBlown(), Utils.getTime()).toHours() >= 1) {
             if (playerData.getAtmBlown() < 3) {
                 if (playerData.getVariable("job") != null && playerData.getVariable("job").equals("geldlieferant")) {
                     inventoryManager.setItem(new CustomItem(36, ItemManager.createItem(Material.GOLD_INGOT, 1, 0, "§6Geld abgeben")) {
@@ -156,7 +156,7 @@ public class BankingUtils implements Listener {
                             Bukkit.getWorld("world").playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 1.0f);
                             ItemManager.removeCustomItem(player, RoleplayItem.EXPLOSION_DEVICE, 1);
                             openRobInventory(player, atm);
-                            atm.setLastTimeBlown(LocalDateTime.now());
+                            atm.setLastTimeBlown(Utils.getTime());
                             playerData.setAtmBlown(playerData.getAtmBlown() + 1);
                             playerData.save();
                             boolean isRandom = Utils.isRandom(5);
