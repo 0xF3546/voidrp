@@ -3,6 +3,7 @@ package de.polo.core.commands;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.company.Company;
 import de.polo.core.Main;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.location.services.LocationService;
@@ -39,7 +40,7 @@ public class CompanyCommand implements CommandExecutor, Listener {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player);
-        CoreCompany coreCompany = playerData.getCompany();
+        Company coreCompany = playerData.getCompany();
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("manage")) {
                 LocationService locationService = VoidAPI.getService(LocationService.class);

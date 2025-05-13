@@ -77,7 +77,7 @@ public class LaboratoryGUI implements GUI {
                 displayUnaccessable("§cDu bist in keiner Firma", inventoryManager);
                 return;
             } else {
-                if (player.getCompanyRole().hasPermission("bank")) {
+                if (player.getData().getCompanyRole().hasPermission("bank")) {
                     displayUnaccessable("§cDu hast keine Berechtigung", inventoryManager);
                     return;
                 }

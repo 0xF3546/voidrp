@@ -4,6 +4,7 @@ import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.company.CompanyRole;
 import de.polo.api.faction.CharacterRecord;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
@@ -714,7 +715,7 @@ public class TabletUtils implements Listener {
         int i = 0;
         while (resultSet.next()) {
             String roleName = "Keine Rolle";
-            CoreCompanyRole role = companyManager.getCompanyRoleById(resultSet.getInt("companyRole"));
+            CompanyRole role = companyManager.getCompanyRoleById(resultSet.getInt("companyRole"));
             if (role != null) {
                 roleName = role.getName();
             }
@@ -787,7 +788,7 @@ public class TabletUtils implements Listener {
             }
         });
         int i = 0;
-        for (CoreCompanyRole role : playerData.getCompany().getRoles()) {
+        for (CompanyRole role : playerData.getCompany().getRoles()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.PAPER, 1, 0, "§e" + role.getName())) {
                 @SneakyThrows
                 @Override
@@ -815,7 +816,7 @@ public class TabletUtils implements Listener {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Rollen verwalten (" + playerData.getCompany().getRoles().size() + ")"), true, true);
         int i = 0;
-        for (CoreCompanyRole role : playerData.getCompany().getRoles()) {
+        for (CompanyRole role : playerData.getCompany().getRoles()) {
             inventoryManager.setItem(new CustomItem(i, ItemManager.createItem(Material.OAK_SIGN, 1, 0, "§6" + role.getName())) {
                 @Override
                 public void onClick(InventoryClickEvent event) {
@@ -855,7 +856,7 @@ public class TabletUtils implements Listener {
         }
     }
 
-    private void editRole(Player player, CoreCompanyRole role) {
+    private void editRole(Player player, CompanyRole role) {
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §6Rolle bearbeiten (" + role.getName() + ")"), true, true);
         inventoryManager.setItem(new CustomItem(4, ItemManager.createItem(Material.PAPER, 1, 0, "§6" + role.getName())) {

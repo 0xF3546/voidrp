@@ -4,6 +4,7 @@ import de.polo.api.Utils.ApiUtils;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.company.CompanyRole;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.api.player.VoidPlayer;
@@ -366,7 +367,7 @@ public class PlayerManager implements Listener {
                 if (coreCompany != null) {
                     playerData.setCompany(coreCompany);
                     if (coreCompany.getRoles() != null) {
-                        for (CoreCompanyRole role : coreCompany.getRoles()) {
+                        for (CompanyRole role : coreCompany.getRoles()) {
                             if (role == null) continue;
                             if (role.getId() == result.getInt("companyRole")) {
                                 playerData.setCompanyRole(role);

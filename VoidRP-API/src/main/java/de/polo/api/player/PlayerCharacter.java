@@ -1,6 +1,7 @@
 package de.polo.api.player;
 
 import de.polo.api.company.Company;
+import de.polo.api.company.CompanyRole;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
@@ -45,4 +46,5 @@ public interface PlayerCharacter {
     String getFaction();
     CompletableFuture<Boolean> setWanted(PlayerWanted wanted);
     Company getCompany();
+    CompanyRole getCompanyRole();
 }

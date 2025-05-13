@@ -2,6 +2,8 @@ package de.polo.core.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.polo.api.company.Company;
+import de.polo.api.company.CompanyRole;
 import de.polo.core.Main;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.player.entities.PlayerData;
@@ -123,9 +125,9 @@ public class CompanyManager {
         return null;
     }
 
-    public CoreCompanyRole getCompanyRoleById(int id) {
+    public CompanyRole getCompanyRoleById(int id) {
         for (CoreCompany c : companies) {
-            for (CoreCompanyRole r : c.getRoles()) {
+            for (CompanyRole r : c.getRoles()) {
                 if (r.getId() == id) {
                     return r;
                 }
@@ -134,7 +136,7 @@ public class CompanyManager {
         return null;
     }
 
-    public void sendCompanyMessage(CoreCompany coreCompany, String message) {
+    public void sendCompanyMessage(Company coreCompany, String message) {
         for (PlayerData playerData : Main.playerManager.getPlayers()) {
             if (playerData.getCompany().equals(coreCompany)) {
                 playerData.getPlayer().sendMessage(message);

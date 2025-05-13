@@ -23,7 +23,7 @@ public interface VoidPlayer {
     Player getPlayer();
 
     PlayerCharacter getData();
-    CompanyRole getCompanyRole();
+
 
     List<PlayerSetting> getSettings();
 
