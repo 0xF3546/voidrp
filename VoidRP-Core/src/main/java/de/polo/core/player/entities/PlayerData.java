@@ -16,6 +16,7 @@ import de.polo.api.player.enums.HealthInsurance;
 import de.polo.api.player.enums.IllnessType;
 import de.polo.api.player.enums.License;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.game.base.extra.PlayerIllness;
 import de.polo.core.game.base.extra.seasonpass.PlayerQuest;
 import de.polo.core.game.base.farming.PlayerWorkstation;
@@ -881,8 +882,9 @@ public class PlayerData implements PlayerCharacter {
         return CompletableFuture.supplyAsync(() -> {
             System.out.println("www");
             if (getWanted() != null) {
-                WantedReason reason = Main.utils.getStaatUtil().getWantedReason(getWanted().getWantedId());
-                WantedReason newReason = Main.utils.getStaatUtil().getWantedReason(corePlayerWanted.getWantedId());
+                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                WantedReason reason = lawEnforcementService.getWantedReason(getWanted().getWantedId());
+                WantedReason newReason = lawEnforcementService.getWantedReason(corePlayerWanted.getWantedId());
                 return reason.getWanted() <= newReason.getWanted();
             }
             System.out.println("yo");
@@ -891,7 +893,8 @@ public class PlayerData implements PlayerCharacter {
             System.out.println("hhh");
             if (!result) return CompletableFuture.completedFuture(false);
             System.out.println("h#ä");
-            WantedReason wantedReason = Main.utils.getStaatUtil().getWantedReason(corePlayerWanted.getWantedId());
+            LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+            WantedReason wantedReason = lawEnforcementService.getWantedReason(corePlayerWanted.getWantedId());
 
             System.out.println("Executing DELETE query...");
             String deleteQuery = "DELETE FROM player_wanteds WHERE uuid = ?";

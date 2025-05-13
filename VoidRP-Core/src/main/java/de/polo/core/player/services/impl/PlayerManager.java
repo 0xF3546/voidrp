@@ -16,6 +16,7 @@ import de.polo.core.admin.services.AdminService;
 import de.polo.core.crew.services.CrewService;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.core.game.base.farming.PlayerWorkstation;
 import de.polo.core.game.base.housing.House;
@@ -541,10 +542,12 @@ public class PlayerManager implements Listener {
     public void add1MinutePlaytime(Player player) {
         UUID uuid = player.getUniqueId();
         PlayerData playerData = playerDataMap.get(uuid);
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
         if (playerData.isJailed()) {
             playerData.setHafteinheiten(playerData.getHafteinheiten() - 1);
             if (playerData.getHafteinheiten() <= 0) {
-                utils.staatUtil.unarrestPlayer(player);
+                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                lawEnforcementService.unarrestPlayer(voidPlayer);
             }
         }
         if (playerData.isAFK()) return;

@@ -2,7 +2,9 @@ package de.polo.core.player.commands;
 
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -69,7 +71,8 @@ public class JailCommand implements CommandExecutor {
                     return;
                 }
                 playerData.removeBankMoney(playerData.getHafteinheiten() * 500, "Kaution Gefängnis");
-                utils.staatUtil.unarrestPlayer(player);
+                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                lawEnforcementService.unarrestPlayer(playerData.getVoidPlayer());
             }
         });
         return false;

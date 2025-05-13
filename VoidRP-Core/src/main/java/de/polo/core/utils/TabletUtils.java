@@ -300,7 +300,8 @@ public class TabletUtils implements Listener {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     Player target = Bukkit.getPlayer(targetplayerData.getUuid());
-                    utils.staatUtil.unarrestPlayer(target);
+                    LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                    lawEnforcementService.unarrestPlayer(targetplayerData.getVoidPlayer());
                     for (Player players : Bukkit.getOnlinePlayers()) {
                         PlayerData playerData1 = playerManager.getPlayerData(players.getUniqueId());
                         if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {
@@ -454,7 +455,7 @@ public class TabletUtils implements Listener {
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8» §6Gefängnis §8- §6Seite§8:§7 " + page), true, true);
         int i = 0;
         int j = 0;
-        for (JailInfo jailInfo : StaatUtil.jailDataMap.values()) {
+        /*for (JailInfo jailInfo : StaatUtil.jailDataMap.values()) {
             OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(jailInfo.getUuid()));
             if (offlinePlayer.isOnline()) {
                 if (i == 26 && i == 18 && i == 22) {
@@ -488,7 +489,7 @@ public class TabletUtils implements Listener {
             public void onClick(InventoryClickEvent event) {
                 openTablet(player);
             }
-        });
+        });*/
 
     }
 
@@ -594,12 +595,13 @@ public class TabletUtils implements Listener {
     }
 
     public void createNewAkte(Player player) {
+        LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         Main.getInstance().getCoreDatabase().insertAndGetKeyAsync("INSERT INTO wantedreasons (reason, wanted) VALUES (?, ?)", playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"))
                 .thenApply(key -> {
                     if (key.isPresent()) {
                         WantedReason wantedReason = new WantedReason(key.get(), playerData.getVariable("input_reason"), playerData.getVariable("input_wanted"));
-                        utils.staatUtil.addWantedReason(wantedReason);
+                        lawEnforcementService.addWantedReason(wantedReason);
                     }
                     return null;
                 });

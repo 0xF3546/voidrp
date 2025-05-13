@@ -4,6 +4,7 @@ import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
@@ -49,24 +50,22 @@ public class ArrestCommand implements CommandExecutor {
                     PlayerData targetPlayerData = playerManager.getPlayerData(targetplayer);
                     if (targetPlayerData.isCuffed()) {
                         if (player.getLocation().distance(targetplayer.getLocation()) <= 5) {
-                            try {
-                                if (utils.staatUtil.arrestPlayer(targetplayer, player, false)) {
-                                    VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(targetplayer);
-                                    if (targetVoidPlayer.isAduty()) {
-                                        player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
-                                        return false;
-                                    }
-                                    player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
-                                    playerManager.addExp(player, Utils.random(15, 44));
-                                    playerManager.setPlayerMove(targetplayer, true);
-                                    targetPlayerData.setCuffed(false);
-                                    player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
-                                    seasonpass.didQuest(targetplayer, 8);
-                                } else {
-                                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " wird nicht gesucht.");
+                            LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                            VoidPlayer targetVoidPlayer = VoidAPI.getPlayer(targetplayer);
+                            if (lawEnforcementService.arrestPlayer(voidPlayer, targetVoidPlayer, false)) {
+                                if (targetVoidPlayer.isAduty()) {
+                                    player.sendMessage(Prefix.ERROR + "Spieler im Admindienst kannst du nicht inhaftieren.");
+                                    return false;
                                 }
-                            } catch (SQLException e) {
-                                throw new RuntimeException(e);
+                                player.sendMessage("§" + factionData.getPrimaryColor() + factionData.getName() + "§8 » §7Du hast " + targetplayer.getName() + " §aerfolgreich§7 inhaftiert.");
+                                playerManager.addExp(player, Utils.random(15, 44));
+                                playerManager.setPlayerMove(targetplayer, true);
+                                targetPlayerData.setCuffed(false);
+                                player.getInventory().addItem(ItemManager.createItem(RoleplayItem.CUFF.getMaterial(), 1, 0, RoleplayItem.CUFF.getDisplayName()));
+                                seasonpass.didQuest(targetplayer, 8);
+                            } else {
+                                player.sendMessage(Prefix.ERROR + targetplayer.getName() + " wird nicht gesucht.");
                             }
                         } else {
                             player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in deiner nähe.");

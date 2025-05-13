@@ -1,10 +1,12 @@
 package de.polo.core.listeners;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.faction.commands.BombeCommand;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.game.faction.gangwar.Gangwar;
 import de.polo.core.game.faction.streetwar.Streetwar;
 import de.polo.core.game.faction.streetwar.StreetwarData;
@@ -112,10 +114,13 @@ public class DeathListener implements Listener {
             Item item = playerData.getDeathLocation().getWorld().dropItemNaturally(playerData.getDeathLocation(), skull);
             utils.deathUtil.addDeathSkull(player.getUniqueId().toString(), item);
             if (playerData.getWanted() != null && killer != null) {
-                WantedReason wantedReason = utils.staatUtil.getWantedReason(playerData.getWanted().getWantedId());
+                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                WantedReason wantedReason = lawEnforcementService.getWantedReason(playerData.getWanted().getWantedId());
                 PlayerData killerData = playerManager.getPlayerData(killer);
                 if (killerData.isExecutiveFaction() && wantedReason.getWanted() >= 50) {
-                    utils.staatUtil.arrestPlayer(player, killer, true);
+                    VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+                    VoidPlayer voidKiller = VoidAPI.getPlayer(killer);
+                    lawEnforcementService.arrestPlayer(voidKiller, voidPlayer, true);
                     playerManager.addExp(killer, Utils.random(12, 20));
                 }
             }

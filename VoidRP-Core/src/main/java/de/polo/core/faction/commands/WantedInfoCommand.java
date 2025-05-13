@@ -1,6 +1,8 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.WantedReason;
@@ -48,7 +50,8 @@ public class WantedInfoCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Spieler wird nicht gesucht.");
             return false;
         }
-        WantedReason wantedReason = utils.getStaatUtil().getWantedReason(targetData.getWanted().getWantedId());
+        LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+        WantedReason wantedReason = lawEnforcementService.getWantedReason(targetData.getWanted().getWantedId());
         int wanteds = wantedReason.getWanted();
         StringBuilder reason = new StringBuilder(wantedReason.getReason());
         for (WantedVariation variation : targetData.getWanted().getVariations()) {

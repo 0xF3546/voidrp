@@ -1,6 +1,8 @@
 package de.polo.core.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -32,7 +34,8 @@ public class StatsCommand implements CommandExecutor {
         if (playerData.getWanted() == null) {
             player.sendMessage(" §8- §6Fahndung§8:§c Keine Fahndung");
         } else {
-            WantedReason wantedReason = utils.staatUtil.getWantedReason(playerData.getWanted().getWantedId());
+            LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+            WantedReason wantedReason = lawEnforcementService.getWantedReason(playerData.getWanted().getWantedId());
             player.sendMessage(" §8- §6Fahndung§8:§c " + wantedReason.getWanted() + " WPS");
         }
         player.sendMessage(" §8- §6Bargeld§8:§c " + playerData.getBargeld() + "$");

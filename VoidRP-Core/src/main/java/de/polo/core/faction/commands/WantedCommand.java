@@ -1,6 +1,8 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.WantedReason;
@@ -42,7 +44,8 @@ public class WantedCommand implements CommandExecutor {
                             int i = 0;
                             while (result.next()) {
                                 System.out.println("Found: " + result);
-                                WantedReason wantedReason = utils.staatUtil.getWantedReason(result.resultSet().getInt("wantedId"));
+                                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                                WantedReason wantedReason = lawEnforcementService.getWantedReason(result.resultSet().getInt("wantedId"));
                                 Player player1 = Bukkit.getPlayer(UUID.fromString(result.resultSet().getString("uuid")));
                                 if (player1 == null) continue;
                                 i++;

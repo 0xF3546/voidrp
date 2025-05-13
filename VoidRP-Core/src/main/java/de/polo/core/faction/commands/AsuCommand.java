@@ -1,7 +1,9 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.player.PlayerWanted;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.handler.TabCompletion;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -60,8 +62,8 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
         }
 
         String reasonInput = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-
-        WantedReason reason = utils.getStaatUtil().getWantedReason(reasonInput);
+        LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+        WantedReason reason = lawEnforcementService.getWantedReason(reasonInput);
         if (reason == null) {
             player.sendMessage(Prefix.ERROR + "Der Grund wurde nicht gefunden.");
             return false;
@@ -82,22 +84,12 @@ public class AsuCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        /*List<String> text = new ObjectArrayList<>();
-        if (args.length == 1) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                text.add(player.getName());
-            }
-        }
-        if (args.length != 1) {
-            for (WantedReason reason : utils.getStaatUtil().getWantedReasons()) {
-                text.add(reason.getReason());
-            }
-        }*/
+        LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
         return TabCompletion
                 .getBuilder(args)
                 .addAtIndex(1, Bukkit.getOnlinePlayers().stream()
                         .map(Player::getName).collect(Collectors.toList()))
-                .addAtIndex(2, utils.getStaatUtil().getWantedReasons().stream()
+                .addAtIndex(2, lawEnforcementService.getWantedReasons().stream()
                         .map(WantedReason::getReason).collect(Collectors.toList()))
                 .build();
     }

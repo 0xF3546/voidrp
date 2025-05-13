@@ -1,40 +1,34 @@
 package de.polo.core.storage;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
+
 public class JailInfo {
-    private String uuid;
+    @Getter
+    @Setter
+    private UUID uuid;
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private int hafteinheiten;
-    private String reason;
+    @Getter
+    @Setter
+    private int wantedId;
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
+    public JailInfo(UUID uuid, int hafteinheiten, int wantedId) {
         this.uuid = uuid;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getHafteinheiten() {
-        return hafteinheiten;
-    }
-
-    public void setHafteinheiten(int hafteinheiten) {
         this.hafteinheiten = hafteinheiten;
+        this.wantedId = wantedId;
     }
 
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
+    public JailInfo(int id, UUID uuid, int hafteinheiten, int wantedId) {
+        this.id = id;
+        this.uuid = uuid;
+        this.hafteinheiten = hafteinheiten;
+        this.wantedId = wantedId;
     }
 }

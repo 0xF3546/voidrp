@@ -1,7 +1,9 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.Prefix;
@@ -42,7 +44,9 @@ public class UnarrestCommand extends CommandBase {
             player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler ist nicht im Gefängnis."));
             return;
         }
-        utils.staatUtil.unarrestPlayer(target);
+        LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+        VoidPlayer targetPlayer = VoidAPI.getPlayer(target);
+        lawEnforcementService.unarrestPlayer(targetPlayer);
         for (Player players : Bukkit.getOnlinePlayers()) {
             PlayerData playerData1 = Main.getPlayerManager().getPlayerData(players.getUniqueId());
             if (Objects.equals(playerData1.getFaction(), "FBI") || Objects.equals(playerData1.getFaction(), "Polizei")) {

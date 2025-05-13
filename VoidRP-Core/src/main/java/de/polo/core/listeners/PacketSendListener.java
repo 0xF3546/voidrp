@@ -4,8 +4,10 @@ import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate;
+import de.polo.api.VoidAPI;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
+import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
@@ -74,7 +76,8 @@ public class PacketSendListener implements PacketListener {
         if (targetData.getFaction() == null) return;
         if (factionManager.isPlayerInGoodFaction(target) && !"Medic".equalsIgnoreCase(targetData.getFaction())) {
             if (senderData.getWanted() != null) {
-                WantedReason wantedReason = utils.staatUtil.getWantedReason(senderData.getWanted().getWantedId());
+                LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                WantedReason wantedReason = lawEnforcementService.getWantedReason(senderData.getWanted().getWantedId());
                 if (wantedReason != null) {
                     int wantedLevel = wantedReason.getWanted();
                     NamedTextColor color = wantedLevel >= 50 ? NamedTextColor.DARK_RED : NamedTextColor.RED;

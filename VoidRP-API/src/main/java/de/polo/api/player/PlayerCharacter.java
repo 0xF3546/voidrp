@@ -47,4 +47,10 @@ public interface PlayerCharacter {
     CompletableFuture<Boolean> setWanted(PlayerWanted wanted);
     Company getCompany();
     CompanyRole getCompanyRole();
+
+    // TBD: Rework this
+    void setJailed(boolean jailed);
+    boolean isJailed();
+    void setHafteinheiten(int hafteinheiten);
+    int getHafteinheiten();
 }
