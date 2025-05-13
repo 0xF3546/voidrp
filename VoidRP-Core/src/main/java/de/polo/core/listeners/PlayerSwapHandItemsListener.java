@@ -16,6 +16,7 @@ import de.polo.core.location.services.NavigationService;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.gui.VestColorGUI;
 import de.polo.core.player.services.PlayerService;
 import de.polo.core.storage.Corpse;
 import de.polo.core.storage.Dealer;
@@ -96,6 +97,9 @@ public class PlayerSwapHandItemsListener implements Listener {
         }
         PlayerData playerData = playerManager.getPlayerData(player);
         ItemStack stack = player.getInventory().getItemInMainHand();
+        if (stack.getType().equals(Material.LEATHER_CHESTPLATE)) {
+            new VestColorGUI(playerData.getVoidPlayer()).open();
+        }
         if (stack.getType().equals(Material.WRITTEN_BOOK)) {
             BookMeta meta = (BookMeta) stack.getItemMeta();
             if (meta.getAuthor() != null && meta.getAuthor().equalsIgnoreCase("Void News")) {

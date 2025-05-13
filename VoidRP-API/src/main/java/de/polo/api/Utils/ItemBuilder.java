@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * ItemBuilder - ItemBuilder for Bukkit 1.13+
@@ -442,6 +443,16 @@ public class ItemBuilder {
         this.item.setItemMeta(itemMeta);
         return this;
     }
+
+    public ItemBuilder setItemMeta(@NotNull final Consumer<ItemMeta> metaConsumer) {
+        ItemMeta meta = this.item.getItemMeta();
+        if (meta != null) {
+            metaConsumer.accept(meta);
+            this.item.setItemMeta(meta);
+        }
+        return this;
+    }
+
 
     /**
      * Get the finished item

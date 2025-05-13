@@ -1,5 +1,6 @@
 package de.polo.api.Utils;
 
+import lombok.Getter;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
@@ -34,6 +35,23 @@ public class ApiUtils {
             Map.entry("e", YELLOW),
             Map.entry("f", WHITE)
     );
+
+    @Getter
+    private static final Color[] colors = new Color[]{
+            Color.RED,
+            Color.BLUE,
+            Color.GREEN,
+            Color.YELLOW,
+            Color.ORANGE,
+            Color.PURPLE,
+            Color.BLACK,
+            Color.WHITE,
+            Color.GRAY,
+            Color.LIME,
+            Color.AQUA,
+            Color.FUCHSIA
+    };
+
 
     public static NamedTextColor getColorFromCode(String code) {
         return COLOR_CODE_MAP.getOrDefault(code.toLowerCase(), GRAY);
