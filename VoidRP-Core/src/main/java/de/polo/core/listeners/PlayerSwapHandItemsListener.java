@@ -99,6 +99,7 @@ public class PlayerSwapHandItemsListener implements Listener {
         ItemStack stack = player.getInventory().getItemInMainHand();
         if (stack.getType().equals(Material.LEATHER_CHESTPLATE)) {
             new VestColorGUI(playerData.getVoidPlayer()).open();
+            return;
         }
         if (stack.getType().equals(Material.WRITTEN_BOOK)) {
             BookMeta meta = (BookMeta) stack.getItemMeta();
