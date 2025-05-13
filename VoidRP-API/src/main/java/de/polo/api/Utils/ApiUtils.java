@@ -1,10 +1,14 @@
 package de.polo.api.Utils;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Map;
+
+import static net.kyori.adventure.text.format.NamedTextColor.*;
 
 /**
  * @author Mayson1337
@@ -12,6 +16,28 @@ import java.time.ZoneId;
  * @since 1.0.0
  */
 public class ApiUtils {
+    private static final Map<String, NamedTextColor> COLOR_CODE_MAP = Map.ofEntries(
+            Map.entry("0", BLACK),
+            Map.entry("1", DARK_BLUE),
+            Map.entry("2", DARK_GREEN),
+            Map.entry("3", DARK_AQUA),
+            Map.entry("4", DARK_RED),
+            Map.entry("5", DARK_PURPLE),
+            Map.entry("6", GOLD),
+            Map.entry("7", GRAY),
+            Map.entry("8", DARK_GRAY),
+            Map.entry("9", BLUE),
+            Map.entry("a", GREEN),
+            Map.entry("b", AQUA),
+            Map.entry("c", RED),
+            Map.entry("d", LIGHT_PURPLE),
+            Map.entry("e", YELLOW),
+            Map.entry("f", WHITE)
+    );
+
+    public static NamedTextColor getColorFromCode(String code) {
+        return COLOR_CODE_MAP.getOrDefault(code.toLowerCase(), GRAY);
+    }
     public static String getProgressBar(int current, int max, int totalBars) {
         int progress = (int) ((double) current / max * totalBars);
         StringBuilder bar = new StringBuilder();
