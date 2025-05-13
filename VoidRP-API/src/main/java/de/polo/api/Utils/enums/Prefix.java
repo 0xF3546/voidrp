@@ -22,7 +22,8 @@ public enum Prefix {
     ERROR("§cFehler: "),
     ADMIN_ERROR("§8[§c§lADMIN§8] §cFehler§8 » §7"),
     BUSINESS("§8[§6Business§8]§7 "),
-    MAIN("§8 » §7");
+    MAIN("§8 » §7"),
+    BEERPONG("§9BeerPong §8┃ §7➜"),;
 
     private final String prefix;
 

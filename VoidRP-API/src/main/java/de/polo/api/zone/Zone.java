@@ -1,6 +1,7 @@
 package de.polo.api.zone;
 
 import de.polo.api.player.VoidPlayer;
+import de.polo.api.zone.enums.ZoneType;
 
 import java.util.List;
 
@@ -12,8 +13,6 @@ import java.util.List;
 public interface Zone {
     String getName();
 
-    int getRange();
-
     Region getRegion();
 
     List<VoidPlayer> getPlayersInZone();
@@ -21,4 +20,6 @@ public interface Zone {
     void addPlayer(VoidPlayer player);
 
     void removePlayer(VoidPlayer player);
+
+    ZoneType getType();
 }

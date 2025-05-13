@@ -2,6 +2,7 @@ package de.polo.core.zone.services;
 
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.zone.Zone;
+import de.polo.api.zone.enums.ZoneType;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public interface ZoneService {
     List<Zone> getZones();
+
+    List<Zone> getZonesByType(ZoneType type);
 
     Zone getZone(String name);
 
