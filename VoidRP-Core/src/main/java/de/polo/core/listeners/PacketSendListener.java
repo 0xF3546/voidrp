@@ -6,6 +6,7 @@ import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerPlayerInfoUpdate;
 import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.LawEnforcementService;
@@ -39,13 +40,17 @@ public class PacketSendListener implements PacketListener {
 
         Player target = event.getPlayer();
         if (target == null) return;
+        VoidPlayer voidTarget = VoidAPI.getPlayer(target);
+        if (voidTarget == null) return;
 
         WrapperPlayServerPlayerInfoUpdate playerInfoUpdate = new WrapperPlayServerPlayerInfoUpdate(event);
 
         for (var entry : playerInfoUpdate.getEntries()) {
             Player sender = Bukkit.getPlayer(entry.getProfileId());
             if (sender == null) continue;
-
+            VoidPlayer voidSender = VoidAPI.getPlayer(sender);
+            if (voidSender == null) return;
+            
             PlayerData targetData = playerManager.getPlayerData(target.getUniqueId());
             PlayerData senderData = playerManager.getPlayerData(sender.getUniqueId());
             if (targetData == null || senderData == null) continue;
