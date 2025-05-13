@@ -58,10 +58,10 @@ public class CorePlayerService implements PlayerService {
     @Override
     public void savePlayer(VoidPlayer player) {
         long playtime = Duration.between(player.getRuntimeStatistic().joinTime(), Utils.getTime()).toMinutes();
-        database.queryThreaded("INSERT INTO daily_playtime (uuid, date, playtime_seconds)\n" +
+        database.queryThreaded("INSERT INTO player_playtime_daily (uuid, date, minutes)\n" +
                 "SELECT ?, CURDATE(), ?\n" +
                 "WHERE NOT EXISTS (\n" +
-                "    SELECT 1 FROM daily_playtime WHERE uuid = ? AND date = CURDATE()\n" +
+                "    SELECT 1 FROM player_playtime_daily WHERE uuid = ? AND date = CURDATE()\n" +
                 ");", player.getUuid().toString(), playtime, player.getUuid().toString());
         try {
             playerManager.savePlayer(player.getPlayer());
