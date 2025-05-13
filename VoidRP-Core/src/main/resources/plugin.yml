@@ -320,3 +320,4 @@ commands:
   registerbeerpongcup:
   createregion:
   createlaboratory:
+  serverstats:

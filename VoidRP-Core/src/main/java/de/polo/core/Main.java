@@ -8,11 +8,17 @@ import de.polo.api.VoidAPI;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.core.admin.commands.*;
 import de.polo.core.admin.services.InvSeeCommand;
+import de.polo.core.admin.utils.ServerStats;
 import de.polo.core.agreement.commands.AblehnenVertrag;
 import de.polo.core.agreement.commands.AnnehmenCommand;
 import de.polo.core.agreement.services.VertragUtil;
 import de.polo.core.base.commands.*;
 import de.polo.core.commands.*;
+import de.polo.core.commands.BizInviteCommand;
+import de.polo.core.commands.BusinessChatCommand;
+import de.polo.core.commands.BusinessCommand;
+import de.polo.core.commands.GeworbenCommand;
+import de.polo.core.commands.JailtimeCommand;
 import de.polo.core.database.Database;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.faction.commands.*;
@@ -56,6 +62,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import java.lang.reflect.Modifier;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -132,6 +139,7 @@ public final class Main extends JavaPlugin implements Server {
     @Override
     public void onEnable() {
         startSpringBoot();
+        ServerStats.setStartTime(Utils.getTime());
 
         if (!Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
             getLogger().severe("ProtocolLib not found!");
