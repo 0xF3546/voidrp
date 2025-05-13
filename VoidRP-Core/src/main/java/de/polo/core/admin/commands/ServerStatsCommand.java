@@ -33,6 +33,6 @@ public class ServerStatsCommand extends CommandBase {
         player.sendMessage("§7   ===§8[§cServer Stats§8]§7===");
         player.sendMessage("§8 - §7Uptime§8: §a" + Utils.localDateTimeToReadableString(startTime)
                 + " §8(§7" + hours + "h " + minutes + "m " + seconds + "s§8)");
-        player.sendMessage("§8 - §7Spieler Peak§8: §a" + GlobalStats.getValue("peakPlayers") + "§8(§7" + ServerStats.getPeakPlayers() + " heute§8)");
+        player.sendMessage("§8 - §7Spieler Peak§8: §a" + GlobalStats.getValue("peakPlayers") + " §8(§7" + ServerStats.getPeakPlayers() + " heute§8)");
     }
 }
