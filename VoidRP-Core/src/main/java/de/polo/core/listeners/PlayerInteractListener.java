@@ -77,7 +77,7 @@ public class PlayerInteractListener implements Listener {
             event.setCancelled(true);
             return;
         }
-        if (playerData.isAFK()) {
+        if (playerData.getVoidPlayer().isAFK()) {
             utils.setAFK(player, false);
             PlayerPacket packet = new PlayerPacket(player);
             packet.renewPacket();

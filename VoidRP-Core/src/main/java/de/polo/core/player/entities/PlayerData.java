@@ -222,7 +222,6 @@ public class PlayerData implements PlayerCharacter {
     private String bloodType;
     @Setter
     private boolean hasAnwalt;
-    private boolean isAFK = false;
     @Setter
     @Getter
     private int Coins = 0;
@@ -664,13 +663,7 @@ public class PlayerData implements PlayerCharacter {
         return hasAnwalt;
     }
 
-    public boolean isAFK() {
-        return isAFK;
-    }
 
-    public void setAFK(boolean AFK) {
-        isAFK = AFK;
-    }
 
     public void setCuffed(boolean cuffed) {
         this.cuffed = cuffed;

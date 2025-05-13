@@ -1,15 +1,18 @@
 package de.polo.core.admin.commands;
 
+import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.admin.utils.ServerStats;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.utils.GlobalStats;
 import de.polo.core.utils.Utils;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @CommandBase.CommandMeta(
         name = "serverstats",
@@ -34,5 +37,9 @@ public class ServerStatsCommand extends CommandBase {
         player.sendMessage("§8 - §7Uptime§8: §a" + Utils.localDateTimeToReadableString(startTime)
                 + " §8(§7" + hours + "h " + minutes + "m " + seconds + "s§8)");
         player.sendMessage("§8 - §7Spieler Peak§8: §a" + GlobalStats.getValue("peakPlayers") + " §8(§7" + ServerStats.getPeakPlayers() + " heute§8)");
+
+        int onlinePlayer = VoidAPI.getPlayers().size();
+        int afkPlayers = VoidAPI.getPlayers().stream().filter(VoidPlayer::isAFK).toList().size();
+        player.sendMessage("§8 - §7Aktuelle Spieler§8: §a" + onlinePlayer + " §8(§7" + Bukkit.getOnlinePlayers().size() + " §8(§7" + afkPlayers + " AFK§8)");
     }
 }

@@ -81,7 +81,7 @@ public class CommandListener implements Listener {
         }
 
         playerData.setIntVariable("afk", 0);
-        if (playerData.isAFK() && !command.equalsIgnoreCase("afk")) {
+        if (playerData.getVoidPlayer().isAFK() && !command.equalsIgnoreCase("afk")) {
             utils.setAFK(player, false);
             PlayerPacket packet = new PlayerPacket(player);
             packet.renewPacket();

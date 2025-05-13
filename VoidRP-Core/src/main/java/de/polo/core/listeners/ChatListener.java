@@ -1,5 +1,7 @@
 package de.polo.core.listeners;
 
+import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.player.entities.PlayerData;
@@ -40,7 +42,7 @@ public class ChatListener implements Listener {
 
     private void resetAFKStatus(Player player, PlayerData playerData) {
         playerData.setIntVariable("afk", 0);
-        if (playerData.isAFK()) {
+        if (playerData.getVoidPlayer().isAFK()) {
             utils.setAFK(player, false);
             PlayerPacket packet = new PlayerPacket(player);
             packet.renewPacket();

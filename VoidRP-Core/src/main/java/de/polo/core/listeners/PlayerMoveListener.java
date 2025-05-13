@@ -19,7 +19,7 @@ public class PlayerMoveListener implements Listener {
         Player player = event.getPlayer();
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
         playerData.setIntVariable("afk", 0);
-        if (playerData.isAFK()) {
+        if (playerData.getVoidPlayer().isAFK()) {
             utils.setAFK(player, false);
             PlayerPacket packet = new PlayerPacket(player);
             packet.renewPacket();

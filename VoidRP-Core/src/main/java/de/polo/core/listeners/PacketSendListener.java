@@ -123,7 +123,7 @@ public class PacketSendListener implements PacketListener {
     }
 
     private void processAFK(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData senderData) {
-        if (!senderData.isAFK()) return;
+        if (!senderData.getVoidPlayer().isAFK()) return;
 
         Component prefix = Component.text("[AFK] ", NamedTextColor.DARK_PURPLE);
         Component name = entry.getDisplayName() != null

@@ -189,16 +189,16 @@ public class Utils {
             afkTeam = scoreboard.registerNewTeam("afk");
             afkTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
         }
-
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
         if (state) {
             player.sendMessage("§5Du bist nun abwesend.");
-            playerData.setAFK(true);
+            voidPlayer.setAFK(true);
 
             afkTeam.addPlayer(player);
 
         } else {
             player.sendMessage("§5Du bist nun wieder anwesend.");
-            playerData.setAFK(false);
+            voidPlayer.setAFK(false);
             playerData.setIntVariable("afk", 0);
 
             afkTeam.removePlayer(player);
@@ -260,7 +260,7 @@ public class Utils {
             String suffix = "";
             String prefix = "";
             VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            if (playerData.isAFK()) {
+            if (playerData.getVoidPlayer().isAFK()) {
                 prefix = "§8[§5AFK§8]";
             } else if (player.getGameMode().equals(GameMode.CREATIVE)) {
                 prefix = "§8[§2GM§8]";

@@ -336,7 +336,6 @@ public class PlayerManager implements Listener {
             int tutorial = result.getInt("tutorial");
             playerData.setHours(result.getInt("playtime_hours"));
             playerData.setMinutes(result.getInt("playtime_minutes"));
-            playerData.setAFK(false);
             playerData.setHealthInsurance(HealthInsurance.valueOf(result.getString("healthInsurance")));
 
             JSONObject object = new JSONObject(result.getString("relationShip"));
@@ -550,7 +549,7 @@ public class PlayerManager implements Listener {
                 lawEnforcementService.unarrestPlayer(voidPlayer);
             }
         }
-        if (playerData.isAFK()) return;
+        if (playerData.getVoidPlayer().isAFK()) return;
         int hours = playerData.getHours() + 1;
         int minutes = playerData.getMinutes();
         int newMinutes = minutes + 1;
@@ -752,7 +751,7 @@ public class PlayerManager implements Listener {
                         }
                     }
                     add1MinutePlaytime(player);
-                    if (!playerData.isAFK()) {
+                    if (!playerData.getVoidPlayer().isAFK()) {
                         int afkCounter = playerData.getIntVariable("afk") + 1;
                         playerData.setIntVariable("afk", afkCounter);
                         if (afkCounter >= 2) {
@@ -1081,7 +1080,7 @@ public class PlayerManager implements Listener {
         PlayerData playerData = getPlayerData(player);
         // ISSUE VRP-10003: Added null check for playerData
         if (playerData == null) return;
-        if (targetData.isAFK() || playerData.isCuffed() || playerData.isDead()) return;
+        if (targetData.getVoidPlayer().isAFK() || playerData.isCuffed() || playerData.isDead()) return;
         InventoryManager inventoryManager = new InventoryManager(player, 54, Component.text("§8 » §6Interaktionsmenü"));
         playerData.setVariable("current_player", targetplayer.getUniqueId().toString());
         inventoryManager.setItem(new CustomItem(13, ItemManager.createItemHead(targetplayer.getUniqueId().toString(), 1, 0, "§6" + targetplayer.getName())) {
@@ -1349,7 +1348,7 @@ public class PlayerManager implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         PlayerData playerData = getPlayerData(player);
-        if (playerData.isAFK() && event.getTo() != null && event.getFrom().distance(event.getTo()) > 0) {
+        if (playerData.getVoidPlayer().isAFK() && event.getTo() != null && event.getFrom().distance(event.getTo()) > 0) {
             event.getPlayer().setCollidable(false);
         }
         if (!canPlayerMove(player)) return;

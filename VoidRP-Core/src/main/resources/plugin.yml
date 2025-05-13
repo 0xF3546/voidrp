@@ -321,3 +321,4 @@ commands:
   createregion:
   createlaboratory:
   serverstats:
+    aliases: sstats

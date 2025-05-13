@@ -51,6 +51,10 @@ public class CoreVoidPlayer implements VoidPlayer {
     @Getter
     private boolean aduty;
 
+    @Getter
+    @Setter
+    private boolean isAFK;
+
     public CoreVoidPlayer(Player player) {
         this.player = player;
         this.uuid = player.getUniqueId();

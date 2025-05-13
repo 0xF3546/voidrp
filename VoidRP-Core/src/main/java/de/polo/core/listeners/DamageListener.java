@@ -41,7 +41,7 @@ public class DamageListener implements Listener {
         // ISSUE VRP-10000: fixed by adding null check
         if (playerData != null) {
             VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
-            if (voidPlayer.isAduty() || playerData.isAFK() || Main.getInstance().supportManager.isInAcceptedTicket(player) || playerData.isDead() || playerData.isCuffed()) {
+            if (voidPlayer.isAduty() || playerData.getVoidPlayer().isAFK() || Main.getInstance().supportManager.isInAcceptedTicket(player) || playerData.isDead() || playerData.isCuffed()) {
                 event.setCancelled(true);
                 return;
             }

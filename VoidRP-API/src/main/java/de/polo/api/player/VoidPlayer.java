@@ -82,6 +82,8 @@ public interface VoidPlayer {
     boolean isAduty();
 
     void setAduty(boolean aduty);
+    boolean isAFK();
+    void setAFK(boolean afk);
 
     boolean notificationsEnabled();
 
