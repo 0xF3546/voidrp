@@ -119,7 +119,7 @@ public class PacketSendListener implements PacketListener {
     private void processGameMode(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender) {
         if (sender.getGameMode() != GameMode.CREATIVE) return;
 
-        Component prefix = Component.text("[GM] ", NamedTextColor.DARK_GREEN);
+        Component prefix = Component.text("[", NamedTextColor.BLACK).append(Component.text("GM ", NamedTextColor.DARK_GREEN)).append(Component.text("]", NamedTextColor.BLACK));
         Component name = entry.getDisplayName() != null
                 ? entry.getDisplayName()
                 : Component.text(sender.getName(), NamedTextColor.GRAY);
@@ -130,7 +130,7 @@ public class PacketSendListener implements PacketListener {
     private void processAFK(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender, PlayerData senderData) {
         if (!senderData.getVoidPlayer().isAFK()) return;
 
-        Component prefix = Component.text("[AFK] ", NamedTextColor.DARK_PURPLE);
+        Component prefix = Component.text("[", NamedTextColor.BLACK).append(Component.text("AFK ", NamedTextColor.DARK_PURPLE)).append(Component.text("]", NamedTextColor.BLACK));
         Component name = entry.getDisplayName() != null
                 ? entry.getDisplayName()
                 : Component.text(sender.getName(), NamedTextColor.GRAY);
@@ -141,7 +141,7 @@ public class PacketSendListener implements PacketListener {
     private void processReport(WrapperPlayServerPlayerInfoUpdate.PlayerInfo entry, Player sender) {
         if (!Main.supportManager.isInAcceptedTicket(sender)) return;
 
-        Component prefix = Component.text("[R] ", NamedTextColor.GOLD);
+        Component prefix = Component.text("[", NamedTextColor.BLACK).append(Component.text("R ", NamedTextColor.GOLD)).append(Component.text("]", NamedTextColor.BLACK));
         Component name = entry.getDisplayName() != null
                 ? entry.getDisplayName()
                 : Component.text(sender.getName(), NamedTextColor.GRAY);
