@@ -14,14 +14,12 @@ import java.util.List;
 import static de.polo.core.Main.database;
 
 public class ZoneRepository {
-    @Getter
     private final List<Zone> zones = new ObjectArrayList<>();
 
-    public ZoneRepository() {
-        load();
-    }
-
-    private void load() {
+    private List<Zone> getZones() {
+        if (!zones.isEmpty()) {
+            return zones;
+        }
         try (Connection connection = database.getConnection()) {
             var statement = connection.prepareStatement("SELECT * FROM zones");
             var resultSet = statement.executeQuery();
@@ -37,5 +35,6 @@ public class ZoneRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return zones;
     }
 }
