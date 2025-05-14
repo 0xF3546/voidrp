@@ -16,7 +16,7 @@ import static de.polo.core.Main.database;
 public class ZoneRepository {
     private final List<Zone> zones = new ObjectArrayList<>();
 
-    private List<Zone> getZones() {
+    public List<Zone> getZones() {
         if (!zones.isEmpty()) {
             return zones;
         }
