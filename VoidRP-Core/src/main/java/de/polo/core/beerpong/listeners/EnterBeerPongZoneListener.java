@@ -4,6 +4,7 @@ import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.zone.EnterZoneEvent;
+import de.polo.api.zone.enums.ZoneType;
 import de.polo.core.beerpong.services.BeerPongService;
 import de.polo.core.beerpong.handler.BeerPongHandler;
 import de.polo.core.beerpong.entity.BeerPongPlayer;
@@ -16,7 +17,7 @@ import org.bukkit.event.Listener;
 public class EnterBeerPongZoneListener implements Listener {
     @EventHandler
     public void onBeerPongZoneEnter(EnterZoneEvent event) {
-        if (!event.getZone().getName().contains("beerpong")) return;
+        if (!event.getZone().getType().equals(ZoneType.BEERPONG)) return;
         VoidPlayer player = event.getPlayer();
         BeerPongService beerPongService = VoidAPI.getService(BeerPongService.class);
         BeerPongHandler beerPongHandler;

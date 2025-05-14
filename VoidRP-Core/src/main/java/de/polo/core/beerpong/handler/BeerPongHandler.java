@@ -33,7 +33,8 @@ public class BeerPongHandler {
     }
 
     public boolean addPlayer(BeerPongPlayer player) {
-        if (players.size() >= 4) return false;
+        if (players.size() >= 2) return false;
+        if (players.contains(player)) return false;
         players.add(player);
         tryStartGame();
         return true;
@@ -96,7 +97,7 @@ public class BeerPongHandler {
         BeerPongTeam team = pongPlayer.getTeam();
         team.setScore(team.getScore() + 1);
 
-        if (team.getScore() >= 6) {
+        if (team.getScore() >= 9) {
             endGame();
         }
     }
