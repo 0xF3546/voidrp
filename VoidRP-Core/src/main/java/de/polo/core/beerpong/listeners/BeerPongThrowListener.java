@@ -38,7 +38,6 @@ public class BeerPongThrowListener implements Listener {
             RegisteredBlock registeredBlock = blockManager.getBlockAtLocation(hitBlock.getLocation());
             if (registeredBlock == null) {
                 voidPlayer.sendMessage("Du hast nichts getroffen!", Prefix.BEERPONG);
-                return;
             }
             if (hitBlock.getType() == Material.FLOWER_POT) {
                 hitBlock.setType(Material.AIR);
