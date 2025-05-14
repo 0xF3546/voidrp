@@ -1,5 +1,6 @@
 package de.polo.core.beerpong.listeners;
 
+import de.polo.api.Utils.enums.Prefix;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.zone.ExitZoneEvent;
 import de.polo.api.zone.enums.ZoneType;
@@ -16,5 +17,6 @@ public class ExitBeerPongZoneListener implements Listener {
         if (!event.getZone().getType().equals(ZoneType.BEERPONG)) return;
         VoidPlayer player = event.getPlayer();
         BeerPongUtils.handlePlayerLeave(player);
+        player.sendMessage("Du hast das BeerPong Spiel verlassen!", Prefix.BEERPONG);
     }
 }

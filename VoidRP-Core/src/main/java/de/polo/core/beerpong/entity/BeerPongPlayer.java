@@ -23,6 +23,7 @@ public class BeerPongPlayer {
     }
     public void unequip() {
         player.getPlayer().getInventory().clear();
+        if (player.getVariable("beerpongInventory") == null) return;
         ItemStack[] items = (ItemStack[]) player.getVariable("beerpongInventory");
         if (items != null) {
             player.getPlayer().getInventory().setContents(items);

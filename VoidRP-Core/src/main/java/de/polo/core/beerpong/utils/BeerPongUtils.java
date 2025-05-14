@@ -10,11 +10,6 @@ import org.bukkit.inventory.ItemStack;
 public class BeerPongUtils {
 
     public static void handlePlayerLeave(VoidPlayer player) {
-        if (player.getVariable("beerpongInventory") != null) {
-            player.getPlayer().getInventory().setContents((ItemStack[]) player.getVariable("beerpongInventory"));
-            player.setVariable("beerpongInventory", null);
-        }
-
         BeerPongService service = VoidAPI.getService(BeerPongService.class);
         BeerPongHandler handler = service.getHandlerByPlayer(player);
         if (handler == null) return;
