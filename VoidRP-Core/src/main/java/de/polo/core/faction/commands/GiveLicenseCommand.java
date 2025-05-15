@@ -65,6 +65,7 @@ public class GiveLicenseCommand extends CommandBase {
                         player.sendMessage(Component.text(Prefix.ERROR + "Der Spieler hat nicht genug Geld dabei."));
                         return;
                     }
+                    player.getPlayer().closeInventory();
                     player.sendMessage(Component.text("§8[§cWaffenschein§8]§a Du hast " + target.getName() + " einen Waffenschein-Antrag ausgestellt."));
                     target.sendMessage(Component.text("§8[§cWaffenschein§8]§a " + player.getName() + " hat dir einen Waffenschein-Antrag in höhe von " + Utils.toDecimalFormat(finalPrice) + "$ ausgestellt."));
                     utils.vertragUtil.sendInfoMessage(target);
