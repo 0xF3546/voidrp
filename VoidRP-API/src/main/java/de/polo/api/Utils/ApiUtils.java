@@ -52,6 +52,43 @@ public class ApiUtils {
             Color.FUCHSIA
     };
 
+    public static Color getColorFromString(String color) {
+        return switch (color.toLowerCase()) {
+            case "red" -> Color.RED;
+            case "blue" -> Color.BLUE;
+            case "green" -> Color.GREEN;
+            case "yellow" -> Color.YELLOW;
+            case "orange" -> Color.ORANGE;
+            case "purple" -> Color.PURPLE;
+            case "black" -> Color.BLACK;
+            case "white" -> Color.WHITE;
+            case "gray" -> Color.GRAY;
+            case "lime" -> Color.LIME;
+            case "aqua" -> Color.AQUA;
+            case "fuchsia" -> Color.FUCHSIA;
+            default -> null;
+        };
+    }
+
+    public static String getColorString(Color color) {
+        if (color == null) return "§f"; // fallback
+
+        if (color.equals(Color.RED)) return "red";
+        if (color.equals(Color.BLUE)) return "blue";
+        if (color.equals(Color.GREEN)) return "green";
+        if (color.equals(Color.YELLOW)) return "yellow";
+        if (color.equals(Color.ORANGE)) return "orange";
+        if (color.equals(Color.PURPLE)) return "purple";
+        if (color.equals(Color.BLACK)) return "black";
+        if (color.equals(Color.WHITE)) return "white";
+        if (color.equals(Color.GRAY)) return "gray";
+        if (color.equals(Color.LIME)) return "lime";
+        if (color.equals(Color.AQUA)) return "aqua";
+        if (color.equals(Color.FUCHSIA)) return "fuchsia";
+
+        return null;
+    }
+
 
     public static NamedTextColor getColorFromCode(String code) {
         return COLOR_CODE_MAP.getOrDefault(code.toLowerCase(), GRAY);

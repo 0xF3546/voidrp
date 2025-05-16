@@ -5,6 +5,7 @@ import de.polo.api.company.CompanyRole;
 import de.polo.api.crew.Crew;
 import de.polo.api.crew.CrewRank;
 import de.polo.api.jobs.enums.MiniJob;
+import org.bukkit.Color;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -56,4 +57,6 @@ public interface PlayerCharacter {
     int getLoginStreak();
     void setLoginStreak(int streak);
     int getBargeld();
+    Color getNaviColor();
+    void setNaviColor(Color color);
 }

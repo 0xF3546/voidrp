@@ -1,5 +1,6 @@
 package de.polo.core.player.services.impl;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.enums.LongTermJob;
 import de.polo.api.jobs.enums.MiniJob;
@@ -17,6 +18,7 @@ import de.polo.core.utils.Service;
 import de.polo.core.utils.Utils;
 import de.polo.core.utils.enums.EXPType;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -337,5 +339,12 @@ public class CorePlayerService implements PlayerService {
         database.updateAsync("UPDATE players SET loginStreak = ? WHERE uuid = ?",
                 streak, player.getUuid().toString());
         player.getData().setLoginStreak(streak);
+    }
+
+    @Override
+    public void setNaviColor(VoidPlayer player, Color color) {
+        database.updateAsync("UPDATE players SET naviColor = ? WHERE uuid = ?",
+                ApiUtils.getColorString(color), player.getUuid().toString());
+        player.getData().setNaviColor(color);
     }
 }

@@ -8,6 +8,7 @@ import de.polo.core.game.base.extra.PlaytimeReward;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.storage.LoyaltyBonusTimer;
 import de.polo.core.utils.enums.EXPType;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -126,4 +127,5 @@ public interface PlayerService {
 
     void removePlayerSetting(VoidPlayer player, PlayerSetting setting);
     void setLoginStreak(VoidPlayer player, int streak);
+    void setNaviColor(VoidPlayer player, Color color);
 }

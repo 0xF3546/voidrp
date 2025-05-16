@@ -324,3 +324,4 @@ commands:
     aliases: sstats
   advertise:
     aliases: werbung
+  navicolor:

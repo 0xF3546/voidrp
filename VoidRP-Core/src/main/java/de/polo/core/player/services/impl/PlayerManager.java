@@ -358,7 +358,7 @@ public class PlayerManager implements Listener {
 
             playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
             playerData.setLoginStreak(result.getInt("loginStreak"));
-
+            playerData.setNaviColor(ApiUtils.getColorFromString(result.getString("naviColor")));
             playerData.setCanInteract(true);
             playerData.setFlightmode(false);
             playerData.setCoins(result.getInt("coins"));
