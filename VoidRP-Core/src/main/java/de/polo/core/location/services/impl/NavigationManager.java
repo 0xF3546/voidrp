@@ -145,6 +145,12 @@ public class NavigationManager implements Listener {
         final double increment = 0.5;
         final Location targetLocation = new Location(player.getWorld(), x, y, z);
         playerManager.getPlayerData(player.getUniqueId()).setVariable("navi", "ja");
+        Color color = Color.ORANGE;
+        PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (playerData.getPermlevel() >= 20) {
+            color = playerData.getNaviColor();
+        }
+        Color finalColor = color;
         BukkitTask particleTask = new BukkitRunnable() {
             double progress = 0.0;
 
@@ -154,7 +160,7 @@ public class NavigationManager implements Listener {
                 if (playerManager.getPlayerData(player.getUniqueId()).getVariable("navi") != null) {
                     Vector direction = targetLocation.clone().subtract(player.getEyeLocation()).toVector().normalize();
                     Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(progress));
-                    player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.ORANGE, 1));
+                    player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(finalColor, 1));
                     progress += increment;
                     if (progress >= length) {
                         progress = 0.0;
@@ -196,6 +202,12 @@ public class NavigationManager implements Listener {
                 final double length = 5.0;
                 final double increment = 0.5;
                 final Location targetLocation = new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ());
+                Color color = Color.ORANGE;
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+                if (playerData.getPermlevel() >= 20) {
+                    color = playerData.getNaviColor();
+                }
+                Color finalColor = color;
                 BukkitTask particleTask = new BukkitRunnable() {
                     double progress = 0.0;
 
@@ -205,7 +217,7 @@ public class NavigationManager implements Listener {
                         if (playerManager.getPlayerData(player.getUniqueId()).getVariable("navi") != null) {
                             Vector direction = targetLocation.clone().subtract(player.getEyeLocation()).toVector().normalize();
                             Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(progress));
-                            player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.ORANGE, 1));
+                            player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(finalColor, 1));
                             progress += increment;
                             if (progress >= length) {
                                 progress = 0.0;
@@ -236,6 +248,12 @@ public class NavigationManager implements Listener {
                 final double length = 5.0;
                 final double increment = 0.5;
                 final Location targetLocation = new Location(Bukkit.getWorld(locationData.getWelt()), locationData.getX(), locationData.getY(), locationData.getZ());
+                Color color = Color.ORANGE;
+                PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+                if (playerData.getPermlevel() >= 20) {
+                    color = playerData.getNaviColor();
+                }
+                Color finalColor = color;
                 BukkitTask particleTask = new BukkitRunnable() {
                     double progress = 0.0;
 
@@ -245,7 +263,7 @@ public class NavigationManager implements Listener {
                         if (playerManager.getPlayerData(player.getUniqueId()).getVariable("navi") != null) {
                             Vector direction = targetLocation.clone().subtract(player.getEyeLocation()).toVector().normalize();
                             Location particleLocation = player.getEyeLocation().clone().add(direction.clone().multiply(progress));
-                            player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(Color.ORANGE, 1));
+                            player.spawnParticle(Particle.REDSTONE, particleLocation, 1, 0.0, 0.0, 0.0, 0.0, new Particle.DustOptions(finalColor, 1));
                             progress += increment;
                             if (progress >= length) {
                                 progress = 0.0;
