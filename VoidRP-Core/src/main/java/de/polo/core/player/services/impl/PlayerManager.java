@@ -1143,17 +1143,6 @@ public class PlayerManager implements Listener {
                 player.closeInventory();
             }
         });
-        inventoryManager.setItem(new CustomItem(42, ItemManager.createItem(Material.POPPY, 1, 0, "§eTragen")) {
-            @Override
-            public void onClick(InventoryClickEvent event) {
-                if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
-                    player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
-                    return;
-                }
-                carryPlayer(player, targetplayer);
-                player.closeInventory();
-            }
-        });
         if (playerData.getFaction() != null) {
             Faction factionData = factionManager.getFactionData(playerData.getFaction());
             inventoryManager.setItem(new CustomItem(53, ItemManager.createItem(Material.GOLD_NUGGET, 1, 0, "§8[§" + factionData.getPrimaryColor() + factionData.getName() + "§8]§7 Interaktionsmenü")) {
@@ -1291,6 +1280,17 @@ public class PlayerManager implements Listener {
                         targetplayer.sendMessage("§7   ===§8[§3Dienstmarke§8]§7===");
                         targetplayer.sendMessage("§8 ➥ §bRang§8: §7" + factionManager.getRankName(playerData.getFaction(), playerData.getFactionGrade()));
                         player.sendMessage(Prefix.MAIN + "Du hast " + targetplayer.getName() + " deinen Dienstausweis gezeigt.");
+                        player.closeInventory();
+                    }
+                });
+                inventoryManager.setItem(new CustomItem(42, ItemManager.createItem(Material.POPPY, 1, 0, "§eTragen")) {
+                    @Override
+                    public void onClick(InventoryClickEvent event) {
+                        if (player.getLocation().distance(targetplayer.getLocation()) > 5) {
+                            player.sendMessage(Prefix.ERROR + targetplayer.getName() + " ist nicht in der nähe");
+                            return;
+                        }
+                        carryPlayer(player, targetplayer);
                         player.closeInventory();
                     }
                 });
