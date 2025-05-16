@@ -55,4 +55,5 @@ public interface PlayerCharacter {
     int getHafteinheiten();
     int getLoginStreak();
     void setLoginStreak(int streak);
+    int getBargeld();
 }

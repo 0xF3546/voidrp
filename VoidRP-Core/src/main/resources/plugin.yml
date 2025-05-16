@@ -322,3 +322,5 @@ commands:
   createlaboratory:
   serverstats:
     aliases: sstats
+  advertise:
+    aliases: werbung
