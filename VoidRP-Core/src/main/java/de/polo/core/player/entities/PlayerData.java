@@ -287,6 +287,10 @@ public class PlayerData implements PlayerCharacter {
 
     @Getter
     @Setter
+    private int loginStreak;
+
+    @Getter
+    @Setter
     private boolean isLeader;
 
     @Getter

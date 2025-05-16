@@ -331,4 +331,11 @@ public class CorePlayerService implements PlayerService {
         database.deleteAsync("DELETE FROM player_settings WHERE uuid = ? AND setting = ?",
                 player.getUuid().toString(), setting.getSetting().name());
     }
+
+    @Override
+    public void setLoginStreak(VoidPlayer player, int streak) {
+        database.updateAsync("UPDATE players SET loginStreak = ? WHERE uuid = ?",
+                streak, player.getUuid().toString());
+        player.getData().setLoginStreak(streak);
+    }
 }

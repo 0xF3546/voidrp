@@ -357,6 +357,7 @@ public class PlayerManager implements Listener {
                 playerData.setLongTermJob(LongTermJob.valueOf(result.getString("longTermJob")));
 
             playerData.setReceivedBonus(result.getBoolean("bonusReceived"));
+            playerData.setLoginStreak(result.getInt("loginStreak"));
 
             playerData.setCanInteract(true);
             playerData.setFlightmode(false);

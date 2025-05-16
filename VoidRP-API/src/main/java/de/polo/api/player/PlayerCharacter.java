@@ -53,4 +53,6 @@ public interface PlayerCharacter {
     boolean isJailed();
     void setHafteinheiten(int hafteinheiten);
     int getHafteinheiten();
+    int getLoginStreak();
+    void setLoginStreak(int streak);
 }

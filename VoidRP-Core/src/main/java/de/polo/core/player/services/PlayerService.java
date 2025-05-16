@@ -125,4 +125,5 @@ public interface PlayerService {
     void addPlayerSetting(VoidPlayer player, PlayerSetting setting);
 
     void removePlayerSetting(VoidPlayer player, PlayerSetting setting);
+    void setLoginStreak(VoidPlayer player, int streak);
 }

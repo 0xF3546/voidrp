@@ -1,6 +1,8 @@
 package de.polo.core.utils.player;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.api.player.enums.HealthInsurance;
 import de.polo.core.Main;
 import de.polo.core.faction.service.impl.FactionManager;
@@ -11,6 +13,7 @@ import de.polo.core.game.base.vehicle.PlayerVehicleData;
 import de.polo.core.game.base.vehicle.VehicleData;
 import de.polo.core.manager.ServerManager;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.utils.Utils;
 import de.polo.core.vehicles.services.VehicleService;
@@ -20,6 +23,7 @@ import org.bukkit.entity.Player;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class PayDayUtils {
@@ -149,9 +153,19 @@ public class PayDayUtils {
         }
         playerManager.addExp(player, Utils.random(12, 20));
         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
-        if (playerData.getLastPayDay().getDayOfMonth() != LocalDateTime.now().getDayOfMonth()) {
+        if (playerData.getLastPayDay().getDayOfMonth() != ApiUtils.getTime().getDayOfMonth()) {
             player.sendMessage("§8[§6Bonus§8]§7 Du kannst nun deine Daily-Case beim Bonushändler abholen.");
             Main.seasonpass.didQuest(player, 6);
+            LocalDate lastPayDayDate = playerData.getLastPayDay().toLocalDate();
+            LocalDate today = ApiUtils.getTime().toLocalDate();
+            LocalDate yesterday = today.minusDays(1);
+            PlayerService playerService = VoidAPI.getService(PlayerService.class);
+            VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
+            if (lastPayDayDate.isEqual(yesterday)) {
+                playerService.setLoginStreak(voidPlayer, voidPlayer.getData().getLoginStreak() + 1);
+            } else {
+                playerService.setLoginStreak(voidPlayer, 1);
+            }
         }
         playerData.setLastPayDay(LocalDateTime.now());
         Connection connection = Main.getInstance().coreDatabase.getConnection();
