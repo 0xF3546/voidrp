@@ -2,11 +2,8 @@ package de.polo.core.oil.listener;
 
 import de.polo.api.VoidAPI;
 import de.polo.api.oil.OilPump;
-import de.polo.api.pinwheels.Pinwheel;
 import de.polo.core.oil.gui.OilPumpGUI;
 import de.polo.core.oil.services.OilService;
-import de.polo.core.pinwheels.PinwheelGUI;
-import de.polo.core.pinwheels.services.PinwheelService;
 import de.polo.core.utils.Event;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
