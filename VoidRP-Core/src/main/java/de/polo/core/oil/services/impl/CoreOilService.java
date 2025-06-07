@@ -1,6 +1,7 @@
 package de.polo.core.oil.services.impl;
 
 import de.polo.api.oil.OilPump;
+import de.polo.core.oil.dto.CreateOilPumpDto;
 import de.polo.core.oil.services.OilService;
 import de.polo.core.utils.Service;
 
@@ -29,5 +30,10 @@ public class CoreOilService implements OilService {
                 .filter(oilPump -> oilPump.getId() == id)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public int addOilPump(CreateOilPumpDto createOilPumpDto) {
+        return repository.addOilPump(createOilPumpDto);
     }
 }

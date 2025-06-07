@@ -1,13 +1,8 @@
 package de.polo.core.oil.services.impl;
 
 import de.polo.api.VoidAPI;
-import de.polo.api.laboratory.Laboratory;
-import de.polo.api.laboratory.enums.LaboratoryType;
 import de.polo.api.oil.OilPump;
 import de.polo.core.Main;
-import de.polo.core.faction.service.FactionService;
-import de.polo.core.laboratory.dto.CreateLaboratoryDto;
-import de.polo.core.laboratory.entities.CoreLaboratory;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.manager.CompanyManager;
 import de.polo.core.oil.dto.CreateOilPumpDto;
@@ -54,7 +49,7 @@ public class OilRepository {
         return oilPumps;
     }
 
-    public int addLaboratory(CreateOilPumpDto createOilPumpDto) {
+    public int addOilPump(CreateOilPumpDto createOilPumpDto) {
         var locationService = VoidAPI.getService(LocationService.class);
         int locationDbId = locationService.createLocation("oilpump_" + UUID.randomUUID(), createOilPumpDto.location());
         database.insertAndGetKeyAsync(
