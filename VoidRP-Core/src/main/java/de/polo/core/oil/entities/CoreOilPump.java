@@ -4,6 +4,7 @@ import de.polo.api.company.Company;
 import de.polo.api.oil.OilPump;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Location;
 
 /**
  * @author Mayson1337
@@ -15,6 +16,9 @@ public class CoreOilPump implements OilPump {
     private final int id;
 
     @Getter
+    private final Location location;
+
+    @Getter
     @Setter
     private Company company;
 
@@ -24,17 +28,18 @@ public class CoreOilPump implements OilPump {
 
     @Getter
     @Setter
-    private int productionPerHour;
-
-    @Getter
-    @Setter
     private int oil;
 
-    public CoreOilPump(int id, Company company, int level, int productionPerHour, int oil) {
+    public CoreOilPump(int id, Company company, Location location, int level, int oil) {
         this.id = id;
         this.company = company;
+        this.location = location;
         this.level = level;
-        this.productionPerHour = productionPerHour;
         this.oil = oil;
+    }
+
+    @Override
+    public int getProductionPerHour() {
+        return level * 30;
     }
 }

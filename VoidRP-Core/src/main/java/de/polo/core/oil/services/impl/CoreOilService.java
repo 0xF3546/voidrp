@@ -1,0 +1,33 @@
+package de.polo.core.oil.services.impl;
+
+import de.polo.api.oil.OilPump;
+import de.polo.core.oil.services.OilService;
+import de.polo.core.utils.Service;
+
+import java.util.List;
+
+/**
+ * @author Mayson1337
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+@Service
+public class CoreOilService implements OilService {
+    private final OilRepository repository;
+    public CoreOilService(OilRepository repository) {
+        this.repository = repository;
+    }
+    @Override
+    public List<OilPump> getOilPumps() {
+        return repository.getOilPumps();
+    }
+
+    @Override
+    public OilPump getOilPump(int id) {
+        return getOilPumps()
+                .stream()
+                .filter(oilPump -> oilPump.getId() == id)
+                .findFirst()
+                .orElse(null);
+    }
+}
