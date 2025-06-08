@@ -86,6 +86,9 @@ public class OilPumpGUI implements GUI {
                 oilPump.setOil(oilPump.getOil() - 5);
                 oilService.updateOilPump(oilPump);
                 ItemManager.addCustomItem(player.getPlayer(), RoleplayItem.UNPROCESSED_OIL, 5);
+                if (oilPump.getCompany() != null) {
+                    oilPump.getCompany().addBank(120);
+                }
             }
         });
     }
