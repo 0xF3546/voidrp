@@ -17,4 +17,10 @@ public interface OilPump {
     int getOil();
     void setOil(int oil);
     Location getLocation();
+    default int getMaxOil() {
+        return 1000;
+    }
+    default int getOilPerTick() {
+        return 5 * this.getLevel();
+    }
 }

@@ -16,5 +16,5 @@ public interface OilService {
     OilPump getOilPump(int id);
     int addOilPump(CreateOilPumpDto createOilPumpDto);
     OilPump getNearestOilPump(Location location, int range);
-
+    void updateOilPump(OilPump oilPump);
 }

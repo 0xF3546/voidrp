@@ -46,4 +46,10 @@ public class CoreOilService implements OilService {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public void updateOilPump(OilPump oilPump) {
+        if (oilPump == null) return;
+        repository.updateOilPump(oilPump);
+    }
 }
