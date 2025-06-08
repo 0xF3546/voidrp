@@ -59,7 +59,9 @@ public enum RoleplayItem {
     WATER("§bWasser", "Wasser", Material.WATER_BUCKET, false),
     DRINK_WATER("§bWasser", "Wasser", Material.POTION, false),
     URAN("§aUran", "Uran", Material.EMERALD, false),
-    BANDAGE("§cBandage", "Bandage", Material.PAPER, false);
+    BANDAGE("§cBandage", "Bandage", Material.PAPER, false),
+    UNPROCESSED_OIL("§8Öl (unverarbeitet)", "Öl (unverarbeitet)", Material.COAL, false),
+    OIL("§8Öl", "Öl", Material.COAL, false),;
 
 
     private final String displayName;

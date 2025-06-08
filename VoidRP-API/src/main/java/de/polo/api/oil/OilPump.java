@@ -11,6 +11,7 @@ import org.bukkit.Location;
 public interface OilPump {
     int getId();
     Company getCompany();
+    void setCompany(Company company);
     int getLevel();
     void setLevel(int level);
     int getProductionPerHour();
