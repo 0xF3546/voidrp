@@ -1,6 +1,8 @@
 package de.polo.core.storage;
 
 import de.polo.core.Main;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.bukkit.World;
 
@@ -8,107 +10,43 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class GasStationData {
+    @Getter
+    @Setter
     private int id;
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private int x;
+    @Getter
+    @Setter
     private int y;
+    @Getter
+    @Setter
     private int z;
+    @Getter
+    @Setter
     private World welt;
+    @Getter
+    @Setter
     private float yaw;
+    @Getter
+    @Setter
     private float pitch;
+    @Getter
+    @Setter
     private int price;
+    @Getter
+    @Setter
     private int literprice;
+    @Getter
+    @Setter
     private int liter;
     private int company;
+    @Getter
+    @Setter
     private int bank;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public int getZ() {
-        return z;
-    }
-
-    public void setZ(int z) {
-        this.z = z;
-    }
-
-    public World getWelt() {
-        return welt;
-    }
-
-    public void setWelt(World welt) {
-        this.welt = welt;
-    }
-
-    public float getYaw() {
-        return yaw;
-    }
-
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
-    }
-
-    public float getPitch() {
-        return pitch;
-    }
-
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public int getLiterprice() {
-        return literprice;
-    }
-
-    public void setLiterprice(int literprice) {
-        this.literprice = literprice;
-    }
-
-    public int getLiter() {
-        return liter;
-    }
-
-    public void setLiter(int liter) {
-        this.liter = liter;
-    }
 
     public CoreCompany getCompany() {
         return Main.companyManager.getCompanyById(company);
@@ -132,11 +70,13 @@ public class GasStationData {
         connection.close();
     }
 
-    public int getBank() {
-        return bank;
+    public void addLiter(int liter) {
+        this.liter += liter;
+        save();
     }
 
-    public void setBank(int bank) {
-        this.bank = bank;
+    public void removeLiter(int liter) {
+        this.liter -= liter;
+        save();
     }
 }

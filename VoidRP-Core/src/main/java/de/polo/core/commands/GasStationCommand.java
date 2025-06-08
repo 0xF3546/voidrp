@@ -1,5 +1,6 @@
 package de.polo.core.commands;
 
+import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
@@ -13,6 +14,7 @@ import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.GasStationData;
 import de.polo.core.utils.Prefix;
 import de.polo.core.utils.Utils;
+import de.polo.core.utils.enums.RoleplayItem;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -25,6 +27,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class GasStationCommand implements CommandExecutor, Listener {
     private final PlayerManager playerManager;
@@ -63,6 +66,17 @@ public class GasStationCommand implements CommandExecutor, Listener {
                 }
             });
         }
+        int oil = ItemManager.getCustomItemCount(player, RoleplayItem.OIL);
+        inventoryManager.setItem(new CustomItem(19, new ItemBuilder(RoleplayItem.OIL.getMaterial())
+                .setName(oil == 0 ? "§7§mÖl abliefern" : "§7Öl abliefern")
+                .setLore(oil == 0 ? List.of("§8 » §cDu hast kein Öl dabei") : List.of("§8 » §7Du hast §a" + oil + "x Öl §7dabei", "§8 » §aKlicke um es abzuliefern"))
+                .build()) {
+            @Override
+            public void onClick(InventoryClickEvent event) {
+                ItemManager.removeCustomItem(player, RoleplayItem.OIL, oil);
+                gasStationData.addLiter(oil);
+            }
+        });
     }
 
     private void openBusinessOverview(Player player, GasStationData gasStationData) {
