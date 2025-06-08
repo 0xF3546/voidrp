@@ -4,6 +4,7 @@ import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
 import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
+import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
 import de.polo.core.game.events.SubmitChatEvent;
 import de.polo.core.location.services.LocationService;
@@ -56,6 +57,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
     }
 
     private void openGasStation(Player player, GasStationData gasStationData) {
+        VoidPlayer voidPlayer = VoidAPI.getPlayer(player);
         PlayerData playerData = playerManager.getPlayerData(player);
         InventoryManager inventoryManager = new InventoryManager(player, 27, Component.text("§8 » §cTankstelle " + gasStationData.getName()), true, true);
         if (playerData.getCompany() != null) {
@@ -75,6 +77,8 @@ public class GasStationCommand implements CommandExecutor, Listener {
             public void onClick(InventoryClickEvent event) {
                 ItemManager.removeCustomItem(player, RoleplayItem.OIL, oil);
                 gasStationData.addLiter(oil);
+                player.closeInventory();
+                voidPlayer.sendMessage("Du hast §a" + oil + "x Öl §7an die Tankstelle " + gasStationData.getName() + " §7abgeliefert.", de.polo.api.Utils.enums.Prefix.MAIN);
             }
         });
     }
