@@ -258,6 +258,7 @@ public class PlayerManager implements Listener {
                 playerData.setLastContract(result.getTimestamp("lastContract").toLocalDateTime());
             playerData.setSecondaryTeam(result.getString("secondaryTeam"));
             playerData.setTeamSpeakUID(result.getString("teamSpeakUID"));
+            playerData.setDiscordId(result.getString("discordId"));
             playerData.setSpawn(result.getString("spawn"));
             playerData.setJob(result.getString("job"));
             player.setMaxHealth(32 + (((double) result.getInt("level") / 5) * 2));

@@ -440,7 +440,6 @@ public final class Main extends JavaPlugin implements Server {
         public CloseServiceCommand closeServiceCommand;
         public OrtenCommand ortenCommand;
         public YoutubeCommand youtubeCommand;
-        public DiscordCommand discordCommand;
         public DepartmentChatCommand departmentChatCommand;
         public MemberCommand memberCommand;
         public ContractsCommand contractsCommand;
@@ -643,7 +642,6 @@ public final class Main extends JavaPlugin implements Server {
             closeServiceCommand = new CloseServiceCommand(playerManager);
             ortenCommand = new OrtenCommand(playerManager, utils);
             youtubeCommand = new YoutubeCommand();
-            discordCommand = new DiscordCommand();
             departmentChatCommand = new DepartmentChatCommand(playerManager, factionManager);
             memberCommand = new MemberCommand(playerManager, factionManager);
             contractsCommand = new ContractsCommand(playerManager, factionManager);

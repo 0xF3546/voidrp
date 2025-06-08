@@ -60,4 +60,6 @@ public interface PlayerCharacter {
     int getBargeld();
     Color getNaviColor();
     void setNaviColor(Color color);
+    String getDiscordId();
+    void setDiscordId(String discordId);
 }

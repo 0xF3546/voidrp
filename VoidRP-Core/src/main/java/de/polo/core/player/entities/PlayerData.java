@@ -195,6 +195,9 @@ public class PlayerData implements PlayerCharacter {
     @Setter
     @Getter
     private String teamSpeakUID;
+    @Getter
+    @Setter
+    private String discordId;
     @Setter
     @Getter
     private String job;

@@ -24,7 +24,8 @@ public enum Prefix {
     BUSINESS("§8[§6Business§8]§7 "),
     MAIN("§8 » §7"),
     BEERPONG("§9BeerPong §8┃ §7➜ "),
-    POLICE_COMPUTER("§9Polizeicomputer §8┃ §7➜ "),;
+    POLICE_COMPUTER("§9Polizeicomputer §8┃ §7➜ "),
+    DISCORD("§9Discord §8┃ §b➜ "),;
 
     private final String prefix;
 
