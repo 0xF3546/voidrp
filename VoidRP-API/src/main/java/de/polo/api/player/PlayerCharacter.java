@@ -46,6 +46,7 @@ public interface PlayerCharacter {
     PlayerWanted getWanted();
     String getFaction();
     CompletableFuture<Boolean> setWanted(PlayerWanted wanted);
+    void clearWanted();
     Company getCompany();
     CompanyRole getCompanyRole();
 
