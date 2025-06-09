@@ -16,8 +16,8 @@ import java.util.List;
 @Service
 public class CoreOilService implements OilService {
     private final OilRepository repository;
-    public CoreOilService(OilRepository repository) {
-        this.repository = repository;
+    public CoreOilService() {
+        this.repository = new OilRepository();
     }
     @Override
     public List<OilPump> getOilPumps() {
