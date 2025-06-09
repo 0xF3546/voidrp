@@ -8,6 +8,7 @@ import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;
 import de.polo.core.storage.BlacklistData;
 import de.polo.core.utils.Prefix;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -224,12 +225,26 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        List<BlacklistData> blacklists = new ObjectArrayList<>();
+        List<String> playerNames = new ObjectArrayList<>();
+        if (sender instanceof Player player) {
+            PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+            if (playerData.getFaction() != null) {
+                Faction factionData = factionManager.getFactionData(playerData.getFaction());
+                if (factionData.hasBlacklist()) {
+                    blacklists = factionManager.getBlacklists().stream().filter(x -> x.getFaction().equalsIgnoreCase(factionData.getName())).toList();
+                    for (BlacklistData blacklistData : blacklists) {
+                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(blacklistData.getUuid()));
+                        playerNames.add(offlinePlayer.getName());
+                    }
+                }
+            }
+        }
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, List.of("all", "add", "remove", "pay"))
                 .addAtIndexIf(2, 1, "add", Bukkit.getOnlinePlayers().stream().map(Player::getName)
                         .toList())
-                .addAtIndexIf(2, 1, "remove", Bukkit.getOnlinePlayers().stream().map(Player::getName)
-                        .toList())
+                .addAtIndexIf(2, 1, "remove", playerNames)
                 .build();
     }
 }
