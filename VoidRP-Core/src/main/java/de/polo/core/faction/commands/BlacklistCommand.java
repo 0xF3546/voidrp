@@ -39,6 +39,10 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         PlayerData playerData = playerManager.getPlayerData(player.getUniqueId());
+        if (args.length == 0) {
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /blacklist [add/remove/pay/all] [Spieler/Fraktion] [<Kills>] [<Preis>] [<Grund>]");
+            return false;
+        }
         if (playerData.getFaction() == null) {
             player.sendMessage(Prefix.ERROR_NOPERMISSION);
             return false;
@@ -222,7 +226,9 @@ public class BlacklistCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         return TabCompletion.getBuilder(args)
                 .addAtIndex(1, List.of("all", "add", "remove", "pay"))
-                .addAtIndex(2, Bukkit.getOnlinePlayers().stream().map(Player::getName)
+                .addAtIndexIf(2, 1, "add", Bukkit.getOnlinePlayers().stream().map(Player::getName)
+                        .toList())
+                .addAtIndexIf(2, 1, "remove", Bukkit.getOnlinePlayers().stream().map(Player::getName)
                         .toList())
                 .build();
     }
