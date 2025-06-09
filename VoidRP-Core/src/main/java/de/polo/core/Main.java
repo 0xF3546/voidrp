@@ -191,6 +191,7 @@ public final class Main extends JavaPlugin implements Server {
         getLogger().info("§VOIDROLEPLAY ROLEPLAY STARTED.");
         try {
             Statement statement = coreDatabase.getStatement();
+            statement.execute("DELETE FROM players_online");
             statement.execute("DELETE FROM bank_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM money_logs WHERE datum < DATE_SUB(NOW(), INTERVAL 7 DAY)");
             statement.execute("DELETE FROM players_online_log WHERE time < DATE_SUB(NOW(), INTERVAL 7 DAY)");
