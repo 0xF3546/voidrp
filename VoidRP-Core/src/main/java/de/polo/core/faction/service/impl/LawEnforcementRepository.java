@@ -70,7 +70,7 @@ public class LawEnforcementRepository {
 
     public CharacterRecord getCharacterRecord(UUID target) {
         for (CharacterRecord record : characterRecords) {
-            if (record.getLastEditor().equals(target)) {
+            if (record.getCriminal().equals(target)) {
                 return record;
             }
         }
@@ -78,6 +78,7 @@ public class LawEnforcementRepository {
                 .thenApply(result -> {
                     for (Map<String, Object> res : result) {
                         CharacterRecord record = new CoreCharacterRecord(
+                                target,
                                 (String) res.get("infoText"),
                                 UUID.fromString((String) res.get("lastEditor")),
                                 ((Timestamp) res.get("lastEdit")).toLocalDateTime()
@@ -92,7 +93,7 @@ public class LawEnforcementRepository {
 
     public void setCharacterRecord(UUID target, CharacterRecord record) {
         for (int i = 0; i < characterRecords.size(); i++) {
-            if (characterRecords.get(i).getLastEditor().equals(target)) {
+            if (characterRecords.get(i).getCriminal().equals(target)) {
                 characterRecords.set(i, record);
                 database.updateAsync("UPDATE player_records SET info_text = ?, lastEditor = ?, lastEdit = ? WHERE uuid = ?",
                         record.getInfoText(), record.getLastEditor().toString(), record.getLastEdit().toString(), target.toString());

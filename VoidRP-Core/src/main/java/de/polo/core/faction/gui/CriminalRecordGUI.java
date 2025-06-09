@@ -42,9 +42,9 @@ public class CriminalRecordGUI implements GUI {
                 @Override
                 public void onClick(InventoryClickEvent event) {
                     LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
-                    CharacterRecord newRecord = new CoreCharacterRecord("Keine Angabe", player.getUuid(), Utils.getTime());
+                    CharacterRecord newRecord = new CoreCharacterRecord(criminal, "Keine Angabe", player.getUuid(), Utils.getTime());
                     lawEnforcementService.setCharacterRecord(criminal, newRecord);
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+                    Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
                         openRecord();
                     }, 20L);
                 }
@@ -90,7 +90,7 @@ public class CriminalRecordGUI implements GUI {
         });
 
         if (player.getVariable("criminalrecord::edit::infoText") != null) {
-            inventoryManager.setItem(new CustomItem(27, new ItemBuilder(Material.EMERALD)
+            inventoryManager.setItem(new CustomItem(26, new ItemBuilder(Material.EMERALD)
                     .setName("§aEditieren")
                     .build()) {
                 @Override

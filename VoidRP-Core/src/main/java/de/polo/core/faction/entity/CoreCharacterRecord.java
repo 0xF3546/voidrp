@@ -9,6 +9,9 @@ import java.util.UUID;
 
 public class CoreCharacterRecord implements CharacterRecord {
     @Getter
+    private final UUID criminal;
+
+    @Getter
     @Setter
     private LocalDateTime lastEdit;
 
@@ -20,7 +23,8 @@ public class CoreCharacterRecord implements CharacterRecord {
     @Setter
     private UUID lastEditor;
 
-    public CoreCharacterRecord(String infoText, UUID lastEditor, LocalDateTime lastEdit) {
+    public CoreCharacterRecord(UUID criminal, String infoText, UUID lastEditor, LocalDateTime lastEdit) {
+        this.criminal = criminal;
         this.infoText = infoText;
         this.lastEditor = lastEditor;
         this.lastEdit = lastEdit;

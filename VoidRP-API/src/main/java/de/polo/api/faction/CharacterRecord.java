@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface CharacterRecord {
+    UUID getCriminal();
     LocalDateTime getLastEdit();
 
     void setLastEdit(LocalDateTime lastEdit);
