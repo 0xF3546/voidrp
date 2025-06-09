@@ -284,7 +284,7 @@ public class CorePlayerService implements PlayerService {
         Main.getInstance().getCooldownManager().setCooldown(player.getPlayer(), job.name(), cooldown);
         addExp(player.getPlayer(), exp);
         JobSkill skill = player.getData().getJobSkill(job);
-        skill.addExp(exp / Utils.random(2, 3));
+        skill.addExp(exp == 0 ? 0 :  exp / Utils.random(2, 3));
     }
 
     @Override

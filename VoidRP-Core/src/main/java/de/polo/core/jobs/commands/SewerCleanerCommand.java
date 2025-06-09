@@ -149,10 +149,12 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
             player.sendMessage(PREFIX + "Alle Blöcke gereinigt! §a+" + payout + "$");
             player.getData().addBankMoney(payout, "Auszahlung Sewer Cleaner");
             playerService.addExp(player.getPlayer(), Utils.random(12, 20));
+            playerService.handleJobFinish(player, MiniJob.SEWER_CLEANER, 720, Utils.random(12, 20));
+        } else {
+            playerService.handleJobFinish(player, MiniJob.SEWER_CLEANER, 720, 0);
         }
 
         unEquip(player);
-        playerService.handleJobFinish(player, MiniJob.SEWER_CLEANER, 720, Utils.random(12, 20));
         player.setMiniJob(null);
         player.setActiveJob(null);
         player.setVariable("job::cleaning::blocks", null);
