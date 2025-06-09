@@ -101,7 +101,7 @@ public class LawEnforcementRepository {
             }
         }
         characterRecords.add(record);
-        database.insertAsync("INSERT INTO player_records (uuid, info_text, lastEditor, lastEdit) VALUES (?, ?, ?, ?)",
+        database.insertAsync("INSERT INTO player_records (uuid, infoText, lastEditor, lastEdit) VALUES (?, ?, ?, ?)",
                 target.toString(), record.getInfoText(), record.getLastEditor().toString(), record.getLastEdit().toString());
     }
 
