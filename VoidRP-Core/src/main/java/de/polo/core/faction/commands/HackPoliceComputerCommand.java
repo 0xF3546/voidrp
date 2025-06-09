@@ -34,7 +34,7 @@ public class HackPoliceComputerCommand extends CommandBase {
     public void execute(@NotNull VoidPlayer player, @NotNull PlayerData playerData, @NotNull String[] args) throws Exception {
         LocationService locationService = VoidAPI.getService(LocationService.class);
         Location policeComputerLocation = locationService.getLocation("policecomputer");
-        if (policeComputerLocation.distance(player.getPlayer().getLocation()) < 5) {
+        if (policeComputerLocation.distance(player.getPlayer().getLocation()) > 5) {
             player.sendMessage("Du musst dich in der nähe eines Polizeicomputers befinden!", Prefix.ERROR);
             return;
         }

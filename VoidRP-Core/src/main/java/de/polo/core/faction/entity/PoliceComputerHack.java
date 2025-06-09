@@ -24,7 +24,7 @@ public class PoliceComputerHack {
     public static final int HACKING_DURATION_MINUTES = 10;
     public static final int COOLDOWN_HOURS = 6;
     public static final List<VoidPlayer> targets = new ObjectArrayList<>();
-    public static LocalDateTime lastHackAttempt = ApiUtils.getTime().minusMinutes(HACKING_DURATION_MINUTES);
+    public static LocalDateTime lastHackAttempt = ApiUtils.getTime().minusHours(COOLDOWN_HOURS);
     public static boolean isActive = false;
     private static int dots = 0;
 
