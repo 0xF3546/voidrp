@@ -128,4 +128,5 @@ public interface PlayerService {
     void removePlayerSetting(VoidPlayer player, PlayerSetting setting);
     void setLoginStreak(VoidPlayer player, int streak);
     void setNaviColor(VoidPlayer player, Color color);
+    void setPlayerOnline(UUID uuid, boolean online);
 }

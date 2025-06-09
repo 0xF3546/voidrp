@@ -7,6 +7,7 @@ import de.polo.core.faction.entity.Faction;
 import de.polo.core.location.services.LocationService;
 import de.polo.core.player.entities.CoreVoidPlayer;
 import de.polo.core.player.entities.PlayerData;
+import de.polo.core.player.services.PlayerService;
 import de.polo.core.utils.Event;
 import de.polo.core.utils.Utils;
 import de.polo.core.vehicles.services.VehicleService;
@@ -36,6 +37,8 @@ public class JoinListener implements Listener {
         VoidAPI.addPlayer(new CoreVoidPlayer(player));
         AdminService adminService = VoidAPI.getService(AdminService.class);
         LocationService locationService = VoidAPI.getService(LocationService.class);
+        PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.setPlayerOnline(uuid, true);
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);

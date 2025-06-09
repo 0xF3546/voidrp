@@ -74,6 +74,7 @@ public class QuitListener implements Listener {
         VehicleService vehicleService = VoidAPI.getService(VehicleService.class);
         vehicleService.deleteVehicleByUUID(player.getUniqueId());
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
+        playerService.setPlayerOnline(player.getUniqueId(), false);
         playerService.savePlayer(VoidAPI.getPlayer(player));
         Ticket ticket = supportManager.getTicket(player);
         if (ticket != null) {

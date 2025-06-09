@@ -347,4 +347,21 @@ public class CorePlayerService implements PlayerService {
                 ApiUtils.getColorString(color), player.getUuid().toString());
         player.getData().setNaviColor(color);
     }
+
+    @Override
+    public void setPlayerOnline(UUID uuid, boolean online) {
+        if (online) {
+            database.insertAsync("INSERT INTO players_online (uuid) VALUES (?) ON DUPLICATE KEY UPDATE uuid = ?",
+                    uuid.toString(), uuid.toString());
+            insertJoinLog(uuid, true);
+        } else {
+            database.deleteAsync("DELETE FROM players_online WHERE uuid = ?", uuid.toString());
+            insertJoinLog(uuid, false);
+        }
+    }
+
+    private void insertJoinLog(UUID uuid, boolean isJoin) {
+        database.insertAsync("INSERT INTO players_online_log (uuid, isJoin) VALUES (?, ?)",
+                uuid.toString(), isJoin);
+    }
 }

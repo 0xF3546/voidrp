@@ -37,7 +37,7 @@ public class Discord {
         if (result.next()) {
 
             try {
-                String jsonInputString = "{\"id\": \"" + result.getString("discordId") + "\"}";
+                String jsonInputString = "{\"id\": \"" + result.getString("discordId") + "\", \"token\": \"" + uuid.toString() + "\"}";
                 byte[] postData = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 int postDataLength = postData.length;
 
