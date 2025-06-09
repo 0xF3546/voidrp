@@ -1,5 +1,6 @@
 package de.polo.core.faction.gui;
 
+import de.polo.api.Utils.ApiUtils;
 import de.polo.api.Utils.GUI;
 import de.polo.api.Utils.ItemBuilder;
 import de.polo.api.Utils.inventorymanager.CustomItem;
@@ -59,8 +60,8 @@ public class CriminalRecordGUI implements GUI {
                 .setName(Component.text("§bInformation"))
                 .setLore(
                         Arrays.asList(
-                                "§7Last edit: " + record.getLastEdit(),
-                                "§7Last editor: " + lastEditor
+                                "§8▎ §aZuletzt bearbeitet §8» §7" + Utils.localDateTimeToReadableString(record.getLastEdit()),
+                                "§8▎ §aLetzter bearbeiter §8» §7" + lastEditor
                         )
                 )
                 .build()) {
@@ -70,15 +71,15 @@ public class CriminalRecordGUI implements GUI {
             }
         });
 
-        String infoText = "§7Info: " + (record.getInfoText() == null ? "Keine" : record.getInfoText());
+        String infoText = "§8▎ §aInfo §8» §7" + (record.getInfoText() == null ? "Keine" : record.getInfoText());
         if (player.getVariable("criminalrecord::edit::infoText") != null) {
-            infoText = "§7Info: " + player.getVariable("criminalrecord::edit::infoText");
+            infoText = "§8▎ §aInfo §8» §7" + player.getVariable("criminalrecord::edit::infoText");
         }
         inventoryManager.setItem(new CustomItem(13, new ItemBuilder(Material.PAPER)
                 .setName(Component.text("§cAnmerkung"))
                 .setLore(
                         Arrays.asList(
-                                "§7Info: " + (record.getInfoText() == null ? "Keine" : record.getInfoText())
+                                "§8▎ §aInfo §8» §7" + (record.getInfoText() == null ? "Keine" : record.getInfoText())
                         )
                 )
                 .build()) {
@@ -86,6 +87,7 @@ public class CriminalRecordGUI implements GUI {
             public void onClick(InventoryClickEvent event) {
                 player.setVariable("chatblock", "criminalrecord::edit");
                 player.sendMessage("§7Bitte gib deine Anmerkung ein.");
+                player.getPlayer().closeInventory();
             }
         });
 

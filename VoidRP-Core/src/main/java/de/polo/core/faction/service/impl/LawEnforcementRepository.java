@@ -95,7 +95,7 @@ public class LawEnforcementRepository {
         for (int i = 0; i < characterRecords.size(); i++) {
             if (characterRecords.get(i).getCriminal().equals(target)) {
                 characterRecords.set(i, record);
-                database.updateAsync("UPDATE player_records SET info_text = ?, lastEditor = ?, lastEdit = ? WHERE uuid = ?",
+                database.updateAsync("UPDATE player_records SET infoText = ?, lastEditor = ?, lastEdit = ? WHERE uuid = ?",
                         record.getInfoText(), record.getLastEditor().toString(), record.getLastEdit().toString(), target.toString());
                 return;
             }
