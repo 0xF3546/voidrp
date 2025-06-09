@@ -7,6 +7,7 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.faction.CharacterRecord;
 import de.polo.api.player.VoidPlayer;
+import de.polo.core.Main;
 import de.polo.core.faction.entity.CoreCharacterRecord;
 import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.utils.Utils;
@@ -43,6 +44,9 @@ public class CriminalRecordGUI implements GUI {
                     LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
                     CharacterRecord newRecord = new CoreCharacterRecord("Keine Angabe", player.getUuid(), Utils.getTime());
                     lawEnforcementService.setCharacterRecord(criminal, newRecord);
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(Main.getInstance(), () -> {
+                        openRecord();
+                    }, 20L);
                 }
             });
         } else openRecord();
