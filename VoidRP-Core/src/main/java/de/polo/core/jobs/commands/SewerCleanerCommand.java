@@ -22,6 +22,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -236,7 +237,7 @@ public class SewerCleanerCommand extends CommandBase implements Listener, Job {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onQuit(PlayerQuitEvent event) {
         VoidPlayer player = VoidAPI.getPlayer(event.getPlayer());
         if (player.getMiniJob() == MiniJob.SEWER_CLEANER) {

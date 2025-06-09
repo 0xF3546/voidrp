@@ -28,6 +28,7 @@ import org.bukkit.entity.Boat;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -179,7 +180,7 @@ public class HochseefischerCommand extends CommandBase implements Listener, Job 
         player.getData().addBankMoney(amount * ServerManager.getPayout("hochseefischer"), "Hochseefischer");
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onQuit(PlayerQuitEvent event) {
         endJob(VoidAPI.getPlayer(event.getPlayer()));
     }
