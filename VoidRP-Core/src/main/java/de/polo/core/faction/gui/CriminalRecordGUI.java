@@ -7,6 +7,7 @@ import de.polo.api.Utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.faction.CharacterRecord;
 import de.polo.api.player.VoidPlayer;
+import de.polo.core.faction.entity.CoreCharacterRecord;
 import de.polo.core.faction.service.LawEnforcementService;
 import de.polo.core.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -31,8 +32,24 @@ public class CriminalRecordGUI implements GUI {
     }
 
     public void open() {
-        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("Criminal Record"));
         player.setLastGUI(this);
+        if (record == null) {
+            InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("Criminal Record"));
+            inventoryManager.setItem(new CustomItem(13, new ItemBuilder(Material.EMERALD)
+                    .setName("§aRecord anlegen")
+                    .build()) {
+                @Override
+                public void onClick(InventoryClickEvent event) {
+                    LawEnforcementService lawEnforcementService = VoidAPI.getService(LawEnforcementService.class);
+                    CharacterRecord newRecord = new CoreCharacterRecord("Keine Angabe", player.getUuid(), Utils.getTime());
+                    lawEnforcementService.setCharacterRecord(criminal, newRecord);
+                }
+            });
+        } else openRecord();
+    }
+
+    private void openRecord() {
+        InventoryManager inventoryManager = new InventoryManager(player.getPlayer(), 27, Component.text("Criminal Record"));
         String lastEditor = (record.getLastEditor() == null ? "Niemand" : Bukkit.getOfflinePlayer(record.getLastEditor()).getName());
         inventoryManager.setItem(new CustomItem(4, new ItemBuilder(Material.PAPER)
                 .setName(Component.text("§bInformation"))
