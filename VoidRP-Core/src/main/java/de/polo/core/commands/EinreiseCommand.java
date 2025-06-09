@@ -50,7 +50,7 @@ public class EinreiseCommand implements CommandExecutor {
             if (playerData.getVariable("einreise_dob") == null) playerData.setVariable("einreise_dob", date);
             openEinrese(player);
         } else {
-            player.sendMessage(Prefix.ERROR + "Du hast bereits deine Papiere erhalten.");
+            player.sendMessage(Prefix.ERROR + "Du hast deine Papiere bereits erhalten.");
         }
         return false;
     }
