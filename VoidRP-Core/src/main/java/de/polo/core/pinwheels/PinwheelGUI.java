@@ -90,7 +90,7 @@ public class PinwheelGUI {
             event.setCancelled(true);
         });
 
-        for (int i = 44; i < 54; i++) {
+        for (int i = 45; i < 54; i++) {
             inventoryManager.setItem(new CustomItem(i, new ItemBuilder(Material.REDSTONE)
                     .setName(Component.text("§8 » §cWindrad reparieren"))
                     .build()) {
