@@ -7,6 +7,8 @@ import de.polo.api.player.enums.Setting;
 import de.polo.core.Main;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.utils.Service;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -23,6 +25,8 @@ import java.util.List;
  */
 @Service
 public class CoreAdminService implements AdminService {
+    @Getter
+    private final List<VoidPlayer> vanishedPlayers = new ObjectArrayList<>();
     @Override
     public void sendMessage(String msg, Color color) {
         if (color == null) {
@@ -101,5 +105,9 @@ public class CoreAdminService implements AdminService {
                 .toList();
     }
 
-
+    @Override
+    public void setPlayerVanish(VoidPlayer player, boolean vanish) {
+        if (vanish) vanishedPlayers.add(player);
+        else vanishedPlayers.remove(player);
+    }
 }

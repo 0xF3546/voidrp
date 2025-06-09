@@ -84,6 +84,7 @@ public class AdutyCommand extends CommandBase implements TabCompleter {
                     if (playerData.getVariable("isVanish") == null) {
                         player.sendMessage(Prefix.ADMIN + "Du bist nun im Vanish.");
                         playerData.setVariable("isVanish", "D:");
+                        adminService.setPlayerVanish(player, true);
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.hidePlayer(Main.getInstance(), player.getPlayer());
                         }
@@ -91,6 +92,7 @@ public class AdutyCommand extends CommandBase implements TabCompleter {
                     } else {
                         player.sendMessage(Prefix.ADMIN + "Du bist nun nicht mehr im Vanish.");
                         playerData.setVariable("isVanish", null);
+                        adminService.setPlayerVanish(player, false);
                         for (Player players : Bukkit.getOnlinePlayers()) {
                             players.showPlayer(Main.getInstance(), player.getPlayer());
                         }

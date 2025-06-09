@@ -39,6 +39,9 @@ public class JoinListener implements Listener {
         LocationService locationService = VoidAPI.getService(LocationService.class);
         PlayerService playerService = VoidAPI.getService(PlayerService.class);
         playerService.setPlayerOnline(uuid, true);
+        adminService.getVanishedPlayers().forEach(vanishedPlayer -> {
+            player.hidePlayer(Main.getInstance(), vanishedPlayer.getPlayer());
+        });
         if (playerManager.isCreated(player.getUniqueId())) {
             playerManager.loadPlayer(player);
             PlayerData playerData = playerManager.getPlayerData(uuid);

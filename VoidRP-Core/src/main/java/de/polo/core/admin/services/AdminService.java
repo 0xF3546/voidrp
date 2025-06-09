@@ -37,4 +37,6 @@ public interface AdminService {
     List<VoidPlayer> getActiveGuides();
 
     List<VoidPlayer> getActiveAdmins();
+    void setPlayerVanish(VoidPlayer player, boolean vanish);
+    List<VoidPlayer> getVanishedPlayers();
 }
