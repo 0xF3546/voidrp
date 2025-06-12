@@ -7,8 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.sql.SQLException;
-import java.sql.Statement;
+import static de.polo.core.Main.database;
 
 public class CPCommand implements CommandExecutor {
     public CPCommand() {
@@ -19,16 +18,10 @@ public class CPCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         Player player = (Player) sender;
         if (args.length >= 2) {
-            try {
-                Statement statement = Main.getInstance().coreDatabase.getStatement();
-                statement.executeUpdate("UPDATE `players` SET `email` = '" + args[0] + "', password = '" + args[1] + "' WHERE `uuid` = '" + player.getUniqueId() + "'");
-                player.sendMessage(Prefix.MAIN + "§aDein Controlpanel-Zugang wurde geupdated.");
-            } catch (SQLException e) {
-                player.sendMessage(Prefix.ERROR + "§cEin Fehler ist aufgetreten. Kontaktiere einen Entwickler.");
-                throw new RuntimeException(e);
-            }
+            database.updateAsync("UPDATE players SET password = ? WHERE uuid = ?", args[1], player.getUniqueId().toString());
+            player.sendMessage(Prefix.MAIN + "§aDein Controlpanel-Zugang wurde geupdated.");
         } else {
-            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /cp [Email] [Passwort]");
+            player.sendMessage(Prefix.ERROR + "Syntax-Fehler: /cp [Passwort]");
         }
         return false;
     }
