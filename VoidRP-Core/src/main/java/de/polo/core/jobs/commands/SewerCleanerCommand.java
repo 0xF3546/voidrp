@@ -44,7 +44,7 @@ import java.util.List;
 )
 public class SewerCleanerCommand extends CommandBase implements Listener, Job {
     private final String PREFIX = "§9 " + MiniJob.SEWER_CLEANER.getName() + " §8┃ §8➜ §7";
-    private final Material sewerCleanerMaterial = Material.DIRT;
+    private final Material sewerCleanerMaterial = Material.ANDESITE;
     private final Material cleaningItem = Material.BRUSH;
     private final List<Block> cleanedBlocks = new ObjectArrayList<>();
 
