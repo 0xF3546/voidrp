@@ -50,7 +50,7 @@ public class GiveRankCommand implements CommandExecutor {
             return false;
         }
         if (0 > rang || rang > 6) {
-            player.sendMessage(Prefix.ERROR + "Der Rang muss von 0-6 sein!");
+            player.sendMessage(Prefix.ERROR + "Der Rang muss von 0-8 sein!");
             return false;
         }
         PlayerData targetData = factionManager.getFactionOfPlayer(targetplayer.getUniqueId());
