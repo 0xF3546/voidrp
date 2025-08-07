@@ -49,7 +49,7 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Rang muss eine Zahl sein!");
             return false;
         }
-        if (0 > rang || rang > 6) {
+        if (0 > rang || rang > 8) {
             player.sendMessage(Prefix.ERROR + "Der Rang muss von 0-8 sein!");
             return false;
         }
