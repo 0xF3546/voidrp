@@ -1,6 +1,7 @@
 package de.polo.core.faction.commands;
 
 import de.polo.api.VoidAPI;
+import de.polo.api.foundation.CONSTANTS;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.admin.services.AdminService;
 import de.polo.core.faction.entity.Faction;
@@ -45,7 +46,7 @@ public class LeadFrakCommand extends CommandBase implements TabCompleter {
         String frak = args[1];
         player.sendMessage(Prefix.ADMIN + "Du hast §c" + targetplayer.getName() + "§7 in die Fraktion §c" + frak + "§7 gesetzt.");
         targetplayer.sendMessage(Prefix.FACTION + "Du bist nun Leader der Fraktion §c" + frak + "§7!");
-        factionManager.setPlayerInFrak(targetplayer, frak, 6);
+        factionManager.setPlayerInFrak(targetplayer, frak, CONSTANTS.MAX_FACTION_RANK);
         FactionService factionService = VoidAPI.getService(FactionService.class);
         AdminService adminService = VoidAPI.getService(AdminService.class);
         factionService.setLeader(targetplayer, true);

@@ -1,5 +1,6 @@
 package de.polo.core.faction.commands;
 
+import de.polo.api.foundation.CONSTANTS;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.Faction;
 import de.polo.core.faction.service.impl.FactionManager;
@@ -49,8 +50,8 @@ public class GiveRankCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Rang muss eine Zahl sein!");
             return false;
         }
-        if (0 > rang || rang > 6) {
-            player.sendMessage(Prefix.ERROR + "Der Rang muss von 0-6 sein!");
+        if (CONSTANTS.MIN_FACTION_RANK > rang || rang > CONSTANTS.MAX_FACTION_RANK) {
+            player.sendMessage(Prefix.ERROR + "Der Rang muss von " + CONSTANTS.MIN_FACTION_RANK + "-" + CONSTANTS.MAX_FACTION_RANK + " sein!" );
             return false;
         }
         PlayerData targetData = factionManager.getFactionOfPlayer(targetplayer.getUniqueId());
@@ -78,7 +79,7 @@ public class GiveRankCommand implements CommandExecutor {
             Player target = Bukkit.getPlayer(args[0]);
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
             if (targetplayerData.isLeader()) {
-                if (rang < 5) {
+                if (rang < CONSTANTS.DEFINED_LEADER_RANK) {
                     TeamSpeak.reloadPlayer(targetplayerData.getUuid());
                 }
             }
