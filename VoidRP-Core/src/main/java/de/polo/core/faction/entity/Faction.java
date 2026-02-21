@@ -239,7 +239,11 @@ public class Faction implements IFaction {
     @SneakyThrows
     public void addBankMoney(Integer amount, String reason) {
         setBank(getBank() + amount);
-        Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
+        // Dirty-mark instead of writing to DB on every call.
+        // FactionFlushService persists all dirty factions in batch every ~10 s.
+        if (Main.factionRepository != null) {
+            Main.factionRepository.markDirty(getId());
+        }
         Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('einzahlung', ?, ?, ?, true)",
                 getName(),
                 amount,
@@ -250,7 +254,9 @@ public class Faction implements IFaction {
     public boolean removeFactionMoney(Integer amount, String reason) {
         if (getBank() >= amount) {
             setBank(getBank() - amount);
-            Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET bank = ? WHERE id = ?", getBank(), getId());
+            if (Main.factionRepository != null) {
+                Main.factionRepository.markDirty(getId());
+            }
             Main.getInstance().getCoreDatabase().insertAsync("INSERT INTO faction_bank_logs (type, faction, amount, reason, isPlus) VALUES ('auszahlung', ?, ?, ?, false)",
                     getName(),
                     amount,
@@ -290,6 +296,19 @@ public class Faction implements IFaction {
 
     @SneakyThrows
     public void save() {
+        if (Main.factionRepository != null) {
+            // Sync in-memory state to the Caffeine-cached entity before marking dirty.
+            de.polo.core.infrastructure.cache.CachedFaction cf =
+                    Main.factionRepository.getCache().get(id);
+            if (cf != null) {
+                cf.setSubGroupId(subGroupId);
+                cf.setAllianceFaction(allianceFaction);
+                cf.setEquipPoints(equipPoints);
+                // markDirty() is already called by the setters above.
+                return;
+            }
+        }
+        // Fallback to direct JDBC if cache not yet ready (startup phase).
         Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET subGroup = ?, alliance = ?, equipPoints = ? WHERE id = ?",
                 subGroupId,
                 allianceFaction,

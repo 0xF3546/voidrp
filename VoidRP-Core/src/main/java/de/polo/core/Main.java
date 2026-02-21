@@ -21,6 +21,12 @@ import de.polo.core.commands.GeworbenCommand;
 import de.polo.core.commands.JailtimeCommand;
 import de.polo.core.database.Database;
 import de.polo.core.database.impl.CoreDatabase;
+import de.polo.core.infrastructure.cache.FactionCache;
+import de.polo.core.infrastructure.cache.PlayerDataCache;
+import de.polo.core.infrastructure.persistence.FlushService;
+import de.polo.core.infrastructure.persistence.HibernateConfig;
+import de.polo.core.infrastructure.persistence.HibernateFactionRepository;
+import de.polo.core.infrastructure.persistence.HibernatePlayerRepository;
 import de.polo.core.faction.commands.*;
 import de.polo.core.faction.service.impl.FactionManager;
 import de.polo.core.game.base.CustomTabAPI;
@@ -96,6 +102,12 @@ public final class Main extends JavaPlugin implements Server {
     public static INameTagProvider nameTagProvider;
     public static CustomTabAPI customTabAPI;
     public static NewsManager newsManager;
+    /** Shared player repository using Hibernate + Caffeine dirty-tracking. */
+    public static HibernatePlayerRepository playerRepository;
+    /** Shared faction repository using Hibernate + Caffeine dirty-tracking. */
+    public static HibernateFactionRepository factionRepository;
+    /** Single flush service driving both player and faction repositories. */
+    public static FlushService flushService;
     @Getter
     private static Main instance;
     private final Map<Class<? extends CommandBase>, CommandBase> commandInstances = new HashMap<>();
@@ -103,6 +115,7 @@ public final class Main extends JavaPlugin implements Server {
     private final Map<Class<?>, Object> services = new ConcurrentHashMap<>();
     @Getter
     public CoreDatabase coreDatabase;
+    private HibernateConfig hibernateConfig;
     @Getter
     public CooldownManager cooldownManager;
     public TeamSpeak teamSpeak;
@@ -150,6 +163,13 @@ public final class Main extends JavaPlugin implements Server {
 
         coreDatabase = new CoreDatabase();
         database = coreDatabase;
+
+        // ── Hibernate + Caffeine persistence infrastructure ─────────────────
+        hibernateConfig = new HibernateConfig(coreDatabase.getDataSource());
+        playerRepository = new HibernatePlayerRepository(hibernateConfig.getSessionFactory(), new PlayerDataCache());
+        factionRepository = new HibernateFactionRepository(hibernateConfig.getSessionFactory(), new FactionCache());
+        flushService = new FlushService(hibernateConfig.getSessionFactory(), this, playerRepository, factionRepository);
+        flushService.start();
 
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
@@ -227,6 +247,13 @@ public final class Main extends JavaPlugin implements Server {
             serverManager.savePlayers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+        if (flushService != null) {
+            flushService.stop();
+            flushService.flushAllSync();
+        }
+        if (hibernateConfig != null) {
+            hibernateConfig.close();
         }
         coreDatabase.close();
         PacketEvents.getAPI().terminate();
