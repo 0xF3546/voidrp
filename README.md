@@ -12,7 +12,6 @@
 
 ## TODO
 - Add [Hibernate ORM](https://hibernate.org/orm/)
-- Use [Clean-Code-Architecture](https://www.baeldung.com/spring-boot-clean-architecture)
 
 ## Guidelines
 1. The code may only be used for the "Void Roleplay" project (see [License](License.md)).
