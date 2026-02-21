@@ -406,6 +406,19 @@ public class PlayerManager implements Listener {
 
 
             playerDataMap.put(uuid, playerData);
+            // Populate the Caffeine cache so the FlushService can track dirty players.
+            if (Main.playerRepository != null) {
+                de.polo.core.infrastructure.persistence.PlayerEntity entity =
+                        de.polo.core.infrastructure.persistence.PlayerEntity.fromPlayerData(
+                                uuid, player.getName(),
+                                playerData.getBargeld(), playerData.getBank(),
+                                playerData.getRang(), playerData.getPermlevel(),
+                                playerData.getLevel(), playerData.getExp(),
+                                playerData.getCoins(), playerData.getCrypto(),
+                                playerData.isDead(), playerData.getDeathTime(),
+                                playerData.getLoyaltyBonus());
+                Main.playerRepository.getCache().put(uuid, new de.polo.core.infrastructure.cache.CachedPlayer(entity));
+            }
             if (playerData.getRewardId() == 0) {
                 PlaytimeReward playtimeReward = getRandomPlaytimeReward(playerData);
                 playerData.setRewardId(playtimeReward.getId());
@@ -521,6 +534,20 @@ public class PlayerManager implements Listener {
             }
 
             playerData.getWorkstations().forEach(PlayerWorkstation::save);
+            // Flush dirty cache entry on quit then evict from Caffeine.
+            if (Main.playerRepository != null) {
+                de.polo.core.infrastructure.cache.CachedPlayer cachedPlayer =
+                        Main.playerRepository.getCache().get(uuid);
+                if (cachedPlayer != null) {
+                    // Use convenience mutators so markDirty() is called automatically.
+                    cachedPlayer.setBargeld(playerData.getBargeld());
+                    cachedPlayer.setBank(playerData.getBank());
+                    cachedPlayer.setCoins(playerData.getCoins());
+                    cachedPlayer.setCrypto(playerData.getCrypto());
+                    Main.playerRepository.flushDirty()
+                            .thenRun(() -> Main.playerRepository.getCache().invalidate(uuid));
+                }
+            }
             playerDataMap.remove(uuid);
         } else {
             System.out.println("Spieler " + player.getName() + "'s playerData konnte nicht gefunden werden.");

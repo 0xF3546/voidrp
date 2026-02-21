@@ -55,13 +55,18 @@ public class CoreDatabase implements Database {
         System.out.println("Host: " + yaml.getString("host"));
         System.out.println("User: " + yaml.getString("user"));
         System.out.println("Table: " + yaml.getString("table"));
-        hikariConfig.setJdbcUrl("jdbc:mysql://" + yaml.getString("host") + "/" + yaml.getString("table") + "?autoReconnect=true&useSSL=false");
+        hikariConfig.setJdbcUrl("jdbc:mysql://" + yaml.getString("host") + "/" + yaml.getString("table") + "?autoReconnect=true&useSSL=false&cachePrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048");
         hikariConfig.setUsername(yaml.getString("user"));
         hikariConfig.setPassword(yaml.getString("password"));
-        hikariConfig.setMaximumPoolSize(100000); // 100000 war extrem hoch
+        hikariConfig.setMaximumPoolSize(20);
         hikariConfig.setMinimumIdle(5);
-        hikariConfig.setLeakDetectionThreshold(10000); // Warnung, wenn Verbindung >10 Sek offen
-        hikariConfig.setIdleTimeout(10000);
+        hikariConfig.setLeakDetectionThreshold(15000);
+        hikariConfig.setConnectionTimeout(30000);
+        hikariConfig.setIdleTimeout(600000);
+        hikariConfig.setMaxLifetime(1800000);
+        hikariConfig.addDataSourceProperty("cachePrepStmts", "true");
+        hikariConfig.addDataSourceProperty("prepStmtCacheSize", "250");
+        hikariConfig.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
         dataSource = new HikariDataSource(hikariConfig);
     }
@@ -69,6 +74,11 @@ public class CoreDatabase implements Database {
     @Override
     public void close() {
         dataSource.close();
+    }
+
+    /** Exposes the underlying HikariDataSource for Hibernate integration. */
+    public HikariDataSource getDataSource() {
+        return dataSource;
     }
 
     @SneakyThrows

@@ -698,7 +698,9 @@ public class PlayerData implements PlayerCharacter {
     public void addMoney(int amount, String reason) {
         Main.beginnerpass.didQuest(player, 2, amount);
         setBargeld(getBargeld() + amount);
-        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
+        // Dirty-mark instead of writing to DB on every call.
+        // The FlushService persists all dirty players in batch every ~10 s.
+        Main.playerRepository.markDirty(player.getUniqueId());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
     }
 
@@ -725,7 +727,7 @@ public class PlayerData implements PlayerCharacter {
     @SneakyThrows
     public boolean removeMoney(int amount, String reason) {
         setBargeld(getBargeld() - amount);
-        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bargeld = ? WHERE uuid = ?", getBargeld(), player.getUniqueId().toString());
+        Main.playerRepository.markDirty(player.getUniqueId());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO money_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
         return true;
     }
@@ -734,7 +736,7 @@ public class PlayerData implements PlayerCharacter {
     public void addBankMoney(int amount, String reason) {
         Main.beginnerpass.didQuest(player, 2, amount);
         setBank(getBank() + amount);
-        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
+        Main.playerRepository.markDirty(player.getUniqueId());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (true, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
 
     }
@@ -742,7 +744,7 @@ public class PlayerData implements PlayerCharacter {
     @SneakyThrows
     public boolean removeBankMoney(int amount, String reason) {
         setBank(getBank() - amount);
-        Main.getInstance().coreDatabase.updateAsync("UPDATE players SET bank = ? WHERE uuid = ?", getBank(), player.getUniqueId().toString());
+        Main.playerRepository.markDirty(player.getUniqueId());
         Main.getInstance().coreDatabase.insertAsync("INSERT INTO bank_logs (isPlus, uuid, amount, reason) VALUES (false, ?, ?, ?)", player.getUniqueId().toString(), amount, reason);
         return true;
     }
