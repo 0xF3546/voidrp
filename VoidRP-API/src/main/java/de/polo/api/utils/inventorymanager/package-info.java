@@ -3,7 +3,7 @@
  * It is a very important part of the Plugin and should be used in every plugin that contains GUIs or Inventories.
  * More updates will come soon.
  *
- * @see de.district.api.inventorymanager.InventoryListener InventoryListener
+ * @see de.polo.api.utils.inventorymanager.InventoryListener InventoryListener
  * @since 1.0.0
  */
 package de.polo.api.utils.inventorymanager;
