@@ -3,27 +3,18 @@ package de.polo.core.infrastructure.cache;
 import de.polo.api.faction.Faction;
 import de.polo.core.infrastructure.persistence.FactionEntity;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * Wraps both the domain {@link Faction} and the Hibernate {@link FactionEntity}
- * with an atomic dirty flag.
+ * and provides dirty-tracking via {@link AbstractDirtyEntry}.
  *
- * <p>All bank balance mutations update the domain object and set the dirty flag.
- * The {@link de.polo.core.infrastructure.persistence.FactionFlushService} picks
- * up dirty instances on a schedule and persists them in a single batch
- * transaction – avoiding one DB write per bank operation.
- *
- * <p>Thread safety: {@code dirty} is an {@link AtomicBoolean} so reads and
- * writes from different threads are safe.  Domain fields are only mutated
- * from Bukkit event handlers (main thread), so no extra locking is required
- * on those.
+ * <p>All bank/equip/motd/chatColor mutations update both the domain object and
+ * the Hibernate entity, then mark this entry dirty so it will be persisted in
+ * the next {@link de.polo.core.infrastructure.persistence.FlushService} batch.
  */
-public final class CachedFaction {
+public final class CachedFaction extends AbstractDirtyEntry<FactionEntity> {
 
     private final Faction domain;
     private final FactionEntity entity;
-    private final AtomicBoolean dirty = new AtomicBoolean(false);
 
     public CachedFaction(Faction domain, FactionEntity entity) {
         this.domain = domain;
@@ -34,26 +25,9 @@ public final class CachedFaction {
         return domain;
     }
 
+    @Override
     public FactionEntity getEntity() {
         return entity;
-    }
-
-    public boolean isDirty() {
-        return dirty.get();
-    }
-
-    public void markDirty() {
-        dirty.set(true);
-    }
-
-    /**
-     * Atomically clears the dirty flag.
-     *
-     * @return the previous value – {@code true} if this entry was dirty and
-     *         should be included in the current flush batch
-     */
-    public boolean clearDirty() {
-        return dirty.getAndSet(false);
     }
 
     // ── Convenience mutators that keep domain + entity in sync ──────────────
@@ -62,10 +36,6 @@ public final class CachedFaction {
         return domain.getBank();
     }
 
-    /**
-     * Updates both the in-memory domain and the Hibernate entity, then marks
-     * this entry dirty so it will be persisted in the next flush cycle.
-     */
     public void setBank(int bank) {
         domain.setBank(bank);
         entity.setBank(bank);

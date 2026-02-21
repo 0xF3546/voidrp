@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
  *
  * <p><b>Write path (bank / equip / motd / chatColor):</b> Only the in-memory
  * {@link CachedFaction} is updated and the dirty flag is set.  The
- * {@link FactionFlushService} persists the change in the next scheduled batch
+ * {@link FlushService} persists the change in the next scheduled batch
  * (every ~10 s), on server stop, or when explicitly called.
  *
  * <p><b>Why batch writes?</b> Faction bank updates happen during every job
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
  * With the hybrid strategy, 400 concurrent bank changes produce a single
  * Hibernate {@code merge()} per faction per flush interval.
  */
-public final class HibernateFactionRepository implements FactionRepository {
+public final class HibernateFactionRepository implements FactionRepository, Flushable {
 
     private final SessionFactory sessionFactory;
     private final FactionCache cache;
@@ -134,7 +134,7 @@ public final class HibernateFactionRepository implements FactionRepository {
 
     /**
      * Exposes the {@link SessionFactory} for callers that need single-entity
-     * flushes (e.g. {@link FactionFlushService}).
+     * single-entity flushes (e.g. {@link FlushService#flushEntry}).
      */
     public SessionFactory getSessionFactory() {
         return sessionFactory;

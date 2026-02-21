@@ -23,7 +23,6 @@ import de.polo.core.database.Database;
 import de.polo.core.database.impl.CoreDatabase;
 import de.polo.core.infrastructure.cache.FactionCache;
 import de.polo.core.infrastructure.cache.PlayerDataCache;
-import de.polo.core.infrastructure.persistence.FactionFlushService;
 import de.polo.core.infrastructure.persistence.FlushService;
 import de.polo.core.infrastructure.persistence.HibernateConfig;
 import de.polo.core.infrastructure.persistence.HibernateFactionRepository;
@@ -107,6 +106,8 @@ public final class Main extends JavaPlugin implements Server {
     public static HibernatePlayerRepository playerRepository;
     /** Shared faction repository using Hibernate + Caffeine dirty-tracking. */
     public static HibernateFactionRepository factionRepository;
+    /** Single flush service driving both player and faction repositories. */
+    public static FlushService flushService;
     @Getter
     private static Main instance;
     private final Map<Class<? extends CommandBase>, CommandBase> commandInstances = new HashMap<>();
@@ -115,8 +116,6 @@ public final class Main extends JavaPlugin implements Server {
     @Getter
     public CoreDatabase coreDatabase;
     private HibernateConfig hibernateConfig;
-    private FlushService flushService;
-    private FactionFlushService factionFlushService;
     @Getter
     public CooldownManager cooldownManager;
     public TeamSpeak teamSpeak;
@@ -167,15 +166,10 @@ public final class Main extends JavaPlugin implements Server {
 
         // ── Hibernate + Caffeine persistence infrastructure ─────────────────
         hibernateConfig = new HibernateConfig(coreDatabase.getDataSource());
-        PlayerDataCache playerDataCache = new PlayerDataCache();
-        playerRepository = new HibernatePlayerRepository(hibernateConfig.getSessionFactory(), playerDataCache);
-        flushService = new FlushService(playerRepository, playerDataCache, this);
+        playerRepository = new HibernatePlayerRepository(hibernateConfig.getSessionFactory(), new PlayerDataCache());
+        factionRepository = new HibernateFactionRepository(hibernateConfig.getSessionFactory(), new FactionCache());
+        flushService = new FlushService(hibernateConfig.getSessionFactory(), this, playerRepository, factionRepository);
         flushService.start();
-
-        FactionCache factionDataCache = new FactionCache();
-        factionRepository = new HibernateFactionRepository(hibernateConfig.getSessionFactory(), factionDataCache);
-        factionFlushService = new FactionFlushService(factionRepository, factionDataCache, this);
-        factionFlushService.start();
 
         customTabAPI = new CustomTabAPI();
         scoreboardManager = new ScoreboardManager();
@@ -257,10 +251,6 @@ public final class Main extends JavaPlugin implements Server {
         if (flushService != null) {
             flushService.stop();
             flushService.flushAllSync();
-        }
-        if (factionFlushService != null) {
-            factionFlushService.stop();
-            factionFlushService.flushAllSync();
         }
         if (hibernateConfig != null) {
             hibernateConfig.close();

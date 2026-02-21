@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
  * The hybrid strategy reduces that to one batch {@code UPDATE} per dirty
  * player per flush interval.
  */
-public final class HibernatePlayerRepository implements PlayerRepository {
+public final class HibernatePlayerRepository implements PlayerRepository, Flushable {
 
     private final SessionFactory sessionFactory;
     private final PlayerDataCache cache;
@@ -142,7 +142,7 @@ public final class HibernatePlayerRepository implements PlayerRepository {
 
     /**
      * Exposes the {@link SessionFactory} for callers that need to perform
-     * single-entity flushes (e.g. {@link FlushService#flushPlayer}).
+     * single-entity flushes (e.g. {@link FlushService#flushEntry}).
      */
     public org.hibernate.SessionFactory getSessionFactory() {
         return sessionFactory;

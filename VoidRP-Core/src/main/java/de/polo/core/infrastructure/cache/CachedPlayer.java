@@ -2,54 +2,26 @@ package de.polo.core.infrastructure.cache;
 
 import de.polo.core.infrastructure.persistence.PlayerEntity;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
- * Wraps a {@link PlayerEntity} with an atomic dirty flag.
+ * Wraps a {@link PlayerEntity} and provides dirty-tracking via
+ * {@link AbstractDirtyEntry}.
  *
- * <p>All money mutations update the in-memory entity and set the dirty flag.
- * The {@link de.polo.core.infrastructure.persistence.FlushService} picks up
- * dirty instances on a schedule and persists them in a single batch
+ * <p>All money/coin/crypto mutations update the in-memory entity and
+ * automatically mark this entry dirty.  The {@link de.polo.core.infrastructure.persistence.FlushService}
+ * picks up dirty instances on a schedule and persists them in a single batch
  * transaction – avoiding one DB write per operation.
- *
- * <p>Thread safety: {@code dirty} is an {@link AtomicBoolean} so reads and
- * writes from the Bukkit main thread and from the async flush thread are safe.
- * The {@link PlayerEntity} fields themselves are only mutated from the main
- * thread (Bukkit event handlers), so no additional locking is required.
  */
-public final class CachedPlayer {
+public final class CachedPlayer extends AbstractDirtyEntry<PlayerEntity> {
 
     private final PlayerEntity entity;
-    private final AtomicBoolean dirty = new AtomicBoolean(false);
 
     public CachedPlayer(PlayerEntity entity) {
         this.entity = entity;
     }
 
+    @Override
     public PlayerEntity getEntity() {
         return entity;
-    }
-
-    /** Returns {@code true} if this entry has unsaved changes. */
-    public boolean isDirty() {
-        return dirty.get();
-    }
-
-    /**
-     * Marks this entry as needing to be flushed to the database.
-     * Called after any in-memory mutation.
-     */
-    public void markDirty() {
-        dirty.set(true);
-    }
-
-    /**
-     * Clears the dirty flag after a successful flush.
-     * Returns the previous dirty state so callers can skip a flush that
-     * was already cleared by a concurrent flush.
-     */
-    public boolean clearDirty() {
-        return dirty.getAndSet(false);
     }
 
     // ── Convenience mutators that automatically mark dirty ─────────────────
