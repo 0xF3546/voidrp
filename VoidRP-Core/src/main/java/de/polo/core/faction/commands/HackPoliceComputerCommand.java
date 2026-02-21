@@ -1,7 +1,7 @@
 package de.polo.core.faction.commands;
 
-import de.polo.api.Utils.ApiUtils;
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.ApiUtils;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.faction.entity.PoliceComputerHack;

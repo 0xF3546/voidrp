@@ -1,7 +1,7 @@
 package de.polo.core.utils.inventorymanager;
 
-import de.polo.api.Utils.inventorymanager.InventoryApiRegister;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.inventorymanager.InventoryApiRegister;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.core.utils.Event;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

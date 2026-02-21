@@ -1,10 +1,10 @@
 package de.polo.core.faction.gui;
 
-import de.polo.api.Utils.ApiUtils;
-import de.polo.api.Utils.GUI;
-import de.polo.api.Utils.ItemBuilder;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.ApiUtils;
+import de.polo.api.utils.GUI;
+import de.polo.api.utils.ItemBuilder;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.faction.CharacterRecord;
 import de.polo.api.player.VoidPlayer;

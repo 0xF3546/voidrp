@@ -1,8 +1,8 @@
 package de.polo.core.utils;
 
-import de.polo.api.Utils.ItemBuilder;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.ItemBuilder;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.company.CompanyRole;
 import de.polo.api.faction.CharacterRecord;

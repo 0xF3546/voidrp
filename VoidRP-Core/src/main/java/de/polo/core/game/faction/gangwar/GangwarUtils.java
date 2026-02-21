@@ -1,7 +1,7 @@
 package de.polo.core.game.faction.gangwar;
 
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.gangwar.IGangzone;
 import de.polo.api.player.VoidPlayer;

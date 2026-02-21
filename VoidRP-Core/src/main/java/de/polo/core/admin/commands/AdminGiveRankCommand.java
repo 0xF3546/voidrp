@@ -1,6 +1,6 @@
 package de.polo.core.admin.commands;
 
-import de.polo.api.foundation.CONSTANTS;
+import de.polo.api.foundation.Constants;
 import de.polo.core.Main;
 import de.polo.core.faction.entity.FactionPlayerData;
 import de.polo.core.manager.ServerManager;
@@ -52,8 +52,8 @@ public class AdminGiveRankCommand implements CommandExecutor {
             player.sendMessage(Prefix.ERROR + "Der Rang muss eine Zahl sein!");
             return false;
         }
-        if (CONSTANTS.MIN_FACTION_RANK > rang || rang > CONSTANTS.MAX_FACTION_RANK) {
-            player.sendMessage(Prefix.ERROR + "Der Rang muss von " + CONSTANTS.MIN_FACTION_RANK + "-" + CONSTANTS.MAX_FACTION_RANK + " sein!");
+        if (Constants.MIN_FACTION_RANK > rang || rang > Constants.MAX_FACTION_RANK) {
+            player.sendMessage(Prefix.ERROR + "Der Rang muss von " + Constants.MIN_FACTION_RANK + "-" + Constants.MAX_FACTION_RANK + " sein!");
             return false;
         }
         DBPlayerData dbPlayerData = ServerManager.dbPlayerDataMap.get(targetplayer.getUniqueId().toString());
@@ -78,7 +78,7 @@ public class AdminGiveRankCommand implements CommandExecutor {
             }
             PlayerData targetplayerData = playerManager.getPlayerData(targetplayer.getUniqueId());
             if (targetplayerData.isLeader()) {
-                if (rang < CONSTANTS.DEFINED_LEADER_RANK) {
+                if (rang < Constants.DEFINED_LEADER_RANK) {
                     TeamSpeak.reloadPlayer(targetplayerData.getUuid());
                 }
             }

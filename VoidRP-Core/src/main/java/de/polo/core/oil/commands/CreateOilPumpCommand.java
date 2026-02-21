@@ -1,6 +1,6 @@
 package de.polo.core.oil.commands;
 
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.elevators.dto.CreateElevatorDto;

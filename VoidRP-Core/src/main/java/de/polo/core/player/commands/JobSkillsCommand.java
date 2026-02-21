@@ -1,9 +1,9 @@
 package de.polo.core.player.commands;
 
-import de.polo.api.Utils.ApiUtils;
-import de.polo.api.Utils.ItemBuilder;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.ApiUtils;
+import de.polo.api.utils.ItemBuilder;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.player.JobSkill;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.handler.CommandBase;

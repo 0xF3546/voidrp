@@ -1,5 +1,5 @@
 package de.polo.core.beerpong.handler;
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.zone.Zone;

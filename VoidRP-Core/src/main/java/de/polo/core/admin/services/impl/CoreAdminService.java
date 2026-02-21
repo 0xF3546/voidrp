@@ -1,6 +1,6 @@
 package de.polo.core.admin.services.impl;
 
-import de.polo.api.Utils.ApiUtils;
+import de.polo.api.utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.player.enums.Setting;

@@ -1,6 +1,6 @@
 package de.polo.core.commands;
 
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.handler.CommandBase;
 import de.polo.core.handler.TabCompletion;

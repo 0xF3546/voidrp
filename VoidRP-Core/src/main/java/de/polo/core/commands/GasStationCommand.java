@@ -1,8 +1,8 @@
 package de.polo.core.commands;
 
-import de.polo.api.Utils.ItemBuilder;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.ItemBuilder;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.Main;
@@ -78,7 +78,7 @@ public class GasStationCommand implements CommandExecutor, Listener {
                 ItemManager.removeCustomItem(player, RoleplayItem.OIL, oil);
                 gasStationData.addLiter(oil);
                 player.closeInventory();
-                voidPlayer.sendMessage("Du hast §a" + oil + "x Öl §7an die Tankstelle " + gasStationData.getName() + " §7abgeliefert.", de.polo.api.Utils.enums.Prefix.MAIN);
+                voidPlayer.sendMessage("Du hast §a" + oil + "x Öl §7an die Tankstelle " + gasStationData.getName() + " §7abgeliefert.", de.polo.api.utils.enums.Prefix.MAIN);
             }
         });
     }

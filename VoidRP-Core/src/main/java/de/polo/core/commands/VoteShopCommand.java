@@ -1,7 +1,7 @@
 package de.polo.core.commands;
 
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.core.Main;
 import de.polo.core.manager.ItemManager;
 import de.polo.core.player.entities.PlayerData;
