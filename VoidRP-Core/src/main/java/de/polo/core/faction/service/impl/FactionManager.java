@@ -56,6 +56,49 @@ public class FactionManager {
         return factionDataMap.values();
     }
 
+    /**
+     * Populates the Caffeine {@link de.polo.core.infrastructure.cache.FactionCache} with
+     * an entry for {@code factionData}.  Building the domain model and the Hibernate entity
+     * from the already-loaded Core {@link Faction} avoids a redundant DB round-trip.
+     *
+     * <p>Called once per faction during {@link #loadFactions()}.  If the
+     * infrastructure is not yet initialised (e.g. unit tests), this is a no-op.
+     */
+    private void seedFactionCache(Faction factionData) {
+        if (Main.factionRepository == null) return;
+
+        de.polo.api.faction.Faction domain = new de.polo.api.faction.Faction();
+        domain.setId(factionData.getId());
+        domain.setName(factionData.getName());
+        domain.setFullname(factionData.getFullname());
+        domain.setFactionType(factionData.getFactionType() != null
+                ? de.polo.api.faction.FactionType.valueOf(factionData.getFactionType().name())
+                : null);
+        domain.setBank(factionData.getBank());
+        domain.setPayDay(factionData.getPayDay());
+        domain.setPrimaryColor(factionData.getPrimaryColor());
+        domain.setSecondaryColor(factionData.getSecondaryColor());
+        domain.setMaxMember(factionData.getMaxMember());
+        domain.setHasBlacklist(factionData.hasBlacklist());
+        domain.setDoGangwar(factionData.canDoGangwar());
+        domain.setHasLaboratory(factionData.hasLaboratory());
+        domain.setBadFrak(factionData.isBadFrak());
+        domain.setActive(factionData.isActive());
+        domain.setMotd(factionData.getMotd());
+        domain.setChatColor(factionData.getChatColor() != null ? factionData.getChatColor().name() : null);
+        domain.setEquipPoints(factionData.getEquipPoints());
+        domain.setAllianceFaction(factionData.getAllianceFaction());
+        domain.setSubGroupId(factionData.getSubGroupId());
+        domain.setTookOut(factionData.getTookOut());
+
+        de.polo.core.infrastructure.persistence.FactionEntity entity =
+                de.polo.core.infrastructure.persistence.FactionEntity.fromDomain(domain);
+
+        de.polo.core.infrastructure.cache.CachedFaction cachedFaction =
+                new de.polo.core.infrastructure.cache.CachedFaction(domain, entity);
+        Main.factionRepository.getCache().put(factionData.getId(), cachedFaction);
+    }
+
     public Collection<BlacklistData> getBlacklists() {
         return blacklistDataMap.values();
     }
@@ -150,6 +193,8 @@ public class FactionManager {
                     factionData.upgrades.calculate();
                     factionDataMap.put(locs.getString(2), factionData);
                     factionData.loadReasons();
+                    // Seed the Caffeine cache so the FactionFlushService can track dirty factions.
+                    seedFactionCache(factionData);
                 }
             }
 
@@ -674,6 +719,14 @@ public class FactionManager {
     public void setFactionMOTD(int factionId, String motd) {
         Faction factionData = getFactionData(factionId);
         factionData.setMotd(motd);
+        if (Main.factionRepository != null) {
+            de.polo.core.infrastructure.cache.CachedFaction cf =
+                    Main.factionRepository.getCache().get(factionId);
+            if (cf != null) {
+                cf.setMotd(motd);
+                return;
+            }
+        }
         Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET motd = ? WHERE id = ?",
                 motd, factionId);
     }
@@ -682,6 +735,14 @@ public class FactionManager {
     public void setFactionChatColor(int factionId, ChatColor color) {
         Faction factionData = getFactionData(factionId);
         factionData.setChatColor(color);
+        if (Main.factionRepository != null) {
+            de.polo.core.infrastructure.cache.CachedFaction cf =
+                    Main.factionRepository.getCache().get(factionId);
+            if (cf != null) {
+                cf.setChatColor(color.name());
+                return;
+            }
+        }
         Main.getInstance().getCoreDatabase().updateAsync("UPDATE factions SET chatColor = ? WHERE id = ?",
                 color.name(), factionId);
     }

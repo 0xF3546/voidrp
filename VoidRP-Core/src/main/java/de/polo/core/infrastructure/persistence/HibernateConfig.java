@@ -38,6 +38,7 @@ public final class HibernateConfig {
 
         sessionFactory = new MetadataSources(serviceRegistry)
                 .addAnnotatedClass(PlayerEntity.class)
+                .addAnnotatedClass(FactionEntity.class)
                 .buildMetadata()
                 .buildSessionFactory();
     }
