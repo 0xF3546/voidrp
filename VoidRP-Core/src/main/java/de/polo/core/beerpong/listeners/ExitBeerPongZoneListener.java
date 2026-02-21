@@ -1,6 +1,6 @@
 package de.polo.core.beerpong.listeners;
 
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.player.VoidPlayer;
 import de.polo.api.zone.ExitZoneEvent;
 import de.polo.api.zone.enums.ZoneType;

@@ -1,6 +1,6 @@
 package de.polo.core.player.entities;
 
-import de.polo.api.Utils.GUI;
+import de.polo.api.utils.GUI;
 import de.polo.api.VoidAPI;
 import de.polo.api.jobs.Job;
 import de.polo.api.jobs.enums.MiniJob;

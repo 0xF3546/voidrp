@@ -1,10 +1,10 @@
 package de.polo.core.oil.gui;
 
-import de.polo.api.Utils.GUI;
-import de.polo.api.Utils.ItemBuilder;
-import de.polo.api.Utils.enums.Prefix;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.GUI;
+import de.polo.api.utils.ItemBuilder;
+import de.polo.api.utils.enums.Prefix;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.oil.OilPump;
 import de.polo.api.player.VoidPlayer;

@@ -1,6 +1,6 @@
 package de.polo.core.manager;
 
-import de.polo.api.Utils.ApiUtils;
+import de.polo.api.utils.ApiUtils;
 import de.polo.core.Main;
 import de.polo.core.player.entities.PlayerData;
 import de.polo.core.player.services.impl.PlayerManager;

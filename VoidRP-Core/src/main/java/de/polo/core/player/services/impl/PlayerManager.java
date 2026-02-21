@@ -1,8 +1,8 @@
 package de.polo.core.player.services.impl;
 
-import de.polo.api.Utils.ApiUtils;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.ApiUtils;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.VoidAPI;
 import de.polo.api.company.CompanyRole;
 import de.polo.api.gangwar.IGangzone;

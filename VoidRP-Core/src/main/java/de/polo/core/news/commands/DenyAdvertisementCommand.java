@@ -1,6 +1,6 @@
 package de.polo.core.news.commands;
 
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.news.Advertisement;
 import de.polo.api.player.VoidPlayer;

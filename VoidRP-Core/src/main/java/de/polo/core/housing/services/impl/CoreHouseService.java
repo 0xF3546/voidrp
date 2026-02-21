@@ -1,6 +1,6 @@
 package de.polo.core.housing.services.impl;
 
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.VoidAPI;
 import de.polo.api.player.VoidPlayer;
 import de.polo.core.game.base.housing.House;

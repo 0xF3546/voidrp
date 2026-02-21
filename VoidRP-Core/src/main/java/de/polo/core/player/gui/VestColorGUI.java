@@ -1,11 +1,11 @@
 package de.polo.core.player.gui;
 
-import de.polo.api.Utils.ApiUtils;
-import de.polo.api.Utils.GUI;
-import de.polo.api.Utils.ItemBuilder;
-import de.polo.api.Utils.enums.Prefix;
-import de.polo.api.Utils.inventorymanager.CustomItem;
-import de.polo.api.Utils.inventorymanager.InventoryManager;
+import de.polo.api.utils.ApiUtils;
+import de.polo.api.utils.GUI;
+import de.polo.api.utils.ItemBuilder;
+import de.polo.api.utils.enums.Prefix;
+import de.polo.api.utils.inventorymanager.CustomItem;
+import de.polo.api.utils.inventorymanager.InventoryManager;
 import de.polo.api.player.VoidPlayer;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Color;

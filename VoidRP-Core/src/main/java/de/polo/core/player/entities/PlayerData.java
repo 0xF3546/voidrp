@@ -1,6 +1,6 @@
 package de.polo.core.player.entities;
 
-import de.polo.api.Utils.ApiUtils;
+import de.polo.api.utils.ApiUtils;
 import de.polo.api.VoidAPI;
 import de.polo.api.company.Company;
 import de.polo.api.company.CompanyRole;

@@ -3,7 +3,7 @@ package de.polo.core;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import de.polo.api.Server;
-import de.polo.api.Utils.inventorymanager.InventoryApiRegister;
+import de.polo.api.utils.inventorymanager.InventoryApiRegister;
 import de.polo.api.VoidAPI;
 import de.polo.api.nametags.INameTagProvider;
 import de.polo.core.admin.commands.*;

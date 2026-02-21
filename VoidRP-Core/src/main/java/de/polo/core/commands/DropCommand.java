@@ -12,7 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import static de.polo.api.Utils.enums.Prefix.ERROR;
+import static de.polo.api.utils.enums.Prefix.ERROR;
 
 public class DropCommand implements CommandExecutor {
     private final PlayerManager playerManager;

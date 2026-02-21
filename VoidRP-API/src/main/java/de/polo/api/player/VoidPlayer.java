@@ -1,7 +1,7 @@
 package de.polo.api.player;
 
-import de.polo.api.Utils.GUI;
-import de.polo.api.Utils.enums.Prefix;
+import de.polo.api.utils.GUI;
+import de.polo.api.utils.enums.Prefix;
 import de.polo.api.company.Company;
 import de.polo.api.company.CompanyRole;
 import de.polo.api.jobs.Job;
